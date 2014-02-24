@@ -9,10 +9,6 @@ import charlie.util.Play;
  * @author Katie Craven and John Paul Welsh
  */
 public class BasicStrategy {
-    //private HashMap<HandCardBundle, Play> justSum; // sum of cards' values
-    //private HashMap<HandCardBundle, Play> isPair;  // one of the cards' values
-    //private HashMap<HandCardBundle, Play> hasAce;  // non-Ace card's value
-    
     private HashMap<Integer[], Play> justSum; // sum of cards' values
     private HashMap<Integer[], Play> isPair;  // one of the cards' values
     private HashMap<Integer[], Play> hasAce;  // non-Ace card's value
@@ -155,8 +151,7 @@ public class BasicStrategy {
     }
     
     public Play getPlay(Hand myHand, Card upCard) {
-        //HandCardBundle hcb = new HandCardBundle(myHand, upCard);
-        Play advisedPlay;
+        Play advisedPlay = Play.NONE;
         Integer[] bundle = new Integer[2];
         
         // If there are two cards in the hand
@@ -166,12 +161,22 @@ public class BasicStrategy {
                 bundle[1] = upCard.value();
                 advisedPlay = isPair.get(bundle);
             } else if (myHand.isPair()) { // ACTUALLY IS HAS ACE
+                // lalalalala
+                // lalalalalala
 
             } else { // Otherwise use sum of the cards
-                //advisedPlay = justSum.get();
+                Integer firstValue = myHand.getCard(0).value();
+                Integer secondValue = myHand.getCard(1).value();
+                bundle[0] = firstValue + secondValue;
+                bundle[1] = upCard.value();
+                advisedPlay = justSum.get(bundle);
             }
         } else { // Use sum of the cards
-            advisedPlay = justSum.get(hcb);
+            Integer firstValue = myHand.getCard(0).value();
+            Integer secondValue = myHand.getCard(1).value();
+            bundle[0] = firstValue + secondValue;
+            bundle[1] = upCard.value();
+            advisedPlay = justSum.get(bundle);
         }
 
         return advisedPlay;
