@@ -16,6 +16,7 @@ public class Advisor implements IAdvisor {
     
     @Override
     public Play advise(Hand myHand, Card upCard) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        BasicStrategy bs = new BasicStrategy();
+        return bs.getPlay(myHand, upCard);
     }
 }
