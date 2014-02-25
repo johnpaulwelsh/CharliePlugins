@@ -268,12 +268,13 @@ public class BasicStrategy {
      * @return the suggestion for Play
      */
     public Play getPlay(Hand myHand, Card upCard) {
-        Play advisedPlay = Play.NONE;
+        Play advisedPlay;
         Integer[] bundle = new Integer[2];
         
         // If there are two cards in the hand
         if (myHand.size() == 2) {
             
+            /*
             // Check if the cards are a pair (includes A,A)
             if (myHand.isPair()) {
                 bundle[0] = myHand.getCard(0).value();
@@ -292,15 +293,27 @@ public class BasicStrategy {
                 bundle[1] = upCard.value();
                 advisedPlay = justSum.get(bundle);
             }
+            */
+            // Check if the cards are a pair (includes A,A)
+            if (myHand.isPair()) {
+                bundle[0] = myHand.getCard(0).value();
+                bundle[1] = upCard.value();
+                advisedPlay = isPair.get(bundle);
+            
+            // Otherwise, use the sum of the cards
+            } else {
+                bundle[0] = (Integer)myHand.getValue();
+                bundle[1] = (Integer)upCard.value();
+                advisedPlay = justSum.get(bundle);
+            }
             
         // Otherwise, use the sum of the cards
         } else {
-            bundle[0] = myHand.getValue();
-            bundle[1] = upCard.value();
+            bundle[0] = (Integer)myHand.getValue();
+            bundle[1] = (Integer)upCard.value();
             advisedPlay = justSum.get(bundle);
         }
         
-        System.out.println("This play advises " + advisedPlay.toString());
         return advisedPlay;
     }
 }
