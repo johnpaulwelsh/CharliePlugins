@@ -25,8 +25,8 @@ public class BasicStrategy {
     
     // Katie
     private void populateJustSum() {
-        int handTotal;
-	int dealerCard;
+        Integer handTotal; //total for hand
+	Integer dealerCard;
         	
 	for (handTotal = 5; handTotal<9; handTotal++) {
             for(dealerCard = 2; dealerCard<12; dealerCard++) {
@@ -162,7 +162,7 @@ public class BasicStrategy {
         isPair.put(cardBundle, Play.HIT);
         for (int up = 2; up <= 9; up++) {
             Integer[] cb = {5, up};
-            isPair.put(cb, Play.SPLIT);
+            isPair.put(cb, Play.DOUBLE_DOWN);
         }
         
         // case for 6s
@@ -223,25 +223,120 @@ public class BasicStrategy {
     
     // Both
     private void populateHasAce() {
-        // case for Aces
+        //this is acting on the assumption that the comparisons
+        //to ACE will be with the card that is not an ace, and 
+        //instead we have an array of [notAceCard, dealerCard]
+        //doesnt include AA
         
-        // case for 2s
+        Integer notAce;
+        Integer dealerCard;
+        Integer[] bundleT = new Integer[2];
         
-        // case for 3s
+        //for A2-A3
+        for (notAce = 2; notAce<4; notAce++)
+        {
+            //dealer 2-4
+            for(dealerCard=2; dealerCard<5;dealerCard++)
+            {
+                Integer[] bundle = {notAce, dealerCard};
+                hasAce.put(bundle, Play.HIT);
+            }
+            
+            //dealer 5-6
+            for(dealerCard= 5; dealerCard<7; dealerCard++)
+            {
+                Integer[] bundle = {notAce, dealerCard};
+                hasAce.put(bundle, Play.DOUBLE_DOWN);
+            }
+            
+            //dealer 7-A(11)
+            for(dealerCard= 7; dealerCard<12; dealerCard++)
+            {
+                Integer[] bundle = {notAce, dealerCard};
+                hasAce.put(bundle, Play.HIT);
+            }
+        }
         
-        // case for 4s
+        //for A4-A5
+        for (notAce=4; notAce<6; notAce++)
+        {
+            //dealer hand 2+3
+            for(dealerCard =2; dealerCard<4;dealerCard++)
+            {
+                Integer[] bundle = {notAce, dealerCard};
+                hasAce.put(bundle, Play.HIT);
+            }
+            
+            //dealer hand 4-6
+            for(dealerCard = 4; dealerCard<7; dealerCard++)
+            {
+                Integer[] bundle = {notAce, dealerCard};
+                hasAce.put(bundle, Play.DOUBLE_DOWN);
+            }
+            
+            //hand 7-A(11)
+            for(dealerCard=7; dealerCard<11; dealerCard++)
+            {
+                Integer[] bundle = {notAce, dealerCard};
+                hasAce.put(bundle, Play.HIT);
+            }
+        }
         
-        // case for 5s
+        //A6 dealer 2
         
-        // case for 6s
+        bundleT[0] = 6;
+        bundleT[1] = 2;
+        hasAce.put(bundleT, Play.HIT);
         
-        // case for 7s
+        //A6 dealer 3-6
+        for(dealerCard=3; dealerCard<7;dealerCard++)
+        {
+            Integer[] bundle = {6, dealerCard};
+            hasAce.put(bundle, Play.DOUBLE_DOWN);
+        }
         
-        // case for 8s
+        //A6 dealer 7-A(11)
+        for(dealerCard=7; dealerCard<12; dealerCard++)
+        {
+            Integer[] bundle = {6, dealerCard};
+            hasAce.put(bundle, Play.HIT);
+        }
         
-        // case for 9s
+        //A7, dealer2
+        bundleT[0] = 7;
+        bundleT[1] = 2;
+        hasAce.put(bundleT, Play.STAY);
         
-        // case for 10s
+        //A7, dealer3-6
+        for(dealerCard=3; dealerCard<7;dealerCard++)
+        {
+            Integer[] bundle = {7, dealerCard};
+            hasAce.put(bundle, Play.DOUBLE_DOWN);
+        }
+        
+        //A7, dealer7-8
+        for(dealerCard = 7;dealerCard<9; dealerCard++)
+        {
+            Integer[] bundle = {7, dealerCard};
+            hasAce.put(bundle, Play.DOUBLE_DOWN);
+        }
+        
+        //A7, dealer 9-A(11)
+        for (dealerCard=9; dealerCard<12;dealerCard++)
+        {
+            Integer[] bundle = {7, dealerCard};
+            hasAce.put(bundle, Play.HIT);
+        }
+            
+        //A8-A10
+        for (notAce = 8; notAce<11;notAce++)
+        {
+            for(dealerCard=2; dealerCard<12; dealerCard++)
+            {
+                Integer[] bundle = {notAce, dealerCard};
+                hasAce.put(bundle, Play.STAY);
+            }
+        }
     }
     
     /**
