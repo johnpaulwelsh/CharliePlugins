@@ -16,7 +16,8 @@ public class Advisor implements IAdvisor {
     
     @Override
     public Play advise(Hand myHand, Card upCard) {
-        BasicStrategy bs = new BasicStrategy();
+        BasicStrategy bs;
+        bs = new BasicStrategy();        
         return bs.getPlay(myHand, upCard);
     }
 }

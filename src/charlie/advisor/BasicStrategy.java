@@ -347,7 +347,7 @@ public class BasicStrategy {
      * @return the suggestion for Play
      */
     public Play getPlay(Hand myHand, Card upCard) {
-        Play advisedPlay;
+        //Play advisedPlay;
         Integer[] bundle = new Integer[2];
         
         // If there are two cards in the hand
@@ -357,34 +357,35 @@ public class BasicStrategy {
             if (myHand.isPair()) {
                 bundle[0] = myHand.getCard(0).value();
                 bundle[1] = upCard.value();
-                advisedPlay = isPair.get(bundle);
+                return Play.SPLIT;
+                //return isPair.get(bundle);
             
             // Check whether the player's hand has an Ace
             } else if (hasAce(myHand) != -1) {
                 bundle[0] = myHand.getCard(hasAce(myHand)).value();
                 bundle[1] = upCard.value();
-                advisedPlay = hasAce.get(bundle);
+                return Play.DOUBLE_DOWN;
+                //return hasAce.get(bundle);
             
             // Otherwise, use the sum of the cards
             } else {
                 bundle[0] = myHand.getValue();
                 bundle[1] = upCard.value();
-                advisedPlay = justSum.get(bundle);
+                Integer[] hard = {17, 10};
+                if (justSum.containsKey(hard)) {
+                    return Play.STAY;
+                } else {
+                    return Play.SPLIT;
+                }
+                //return justSum.get(bundle);
             }
             
         // Otherwise, use the sum of the cards
         } else {
             bundle[0] = (Integer)myHand.getValue();
             bundle[1] = (Integer)upCard.value();
-            advisedPlay = justSum.get(bundle);
+            return Play.HIT;
+            //return justSum.get(bundle);   
         }
-        
-        System.console().printf("advised play is " + advisedPlay.toString());
-        
-        advisedPlay = Play.DOUBLE_DOWN;
-        
-        System.console().printf("advised play is " + advisedPlay.toString());
-        
-        return advisedPlay;
     }
 }
