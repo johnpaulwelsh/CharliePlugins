@@ -17,7 +17,7 @@ public class BasicStrategy {
     else
         use top half
     */
-    private HashMap<Array, Play> justSum; // sum of cards' values
+    private HashMap<Integer[], Play> justSum; // sum of cards' values
     private HashMap<Integer, Play> isPair;  // one of the cards' values
     private HashMap<Integer, Play> hasAce;  // non-Ace card's value
     
@@ -32,75 +32,97 @@ public class BasicStrategy {
     }
     
     private void populateJustSum() {
-        int handTotal
-		int dealerCard;
+        int handTotal;
+	int dealerCard;
+        //Integer[] cards = new Integer[2];
 		
-		for (handTotal = 5; handTotal<9; handTotal++)
+	for (handTotal = 5; handTotal<9; handTotal++)
+	{
+		for(dealerCard = 2; dealerCard<12; dealerCard++)
 		{
-			for(dealerCard = 2; dealerCard<12; dealerCard++)
-			{
-				justSum.put([handTotal, dealerCard], HIT);
-			}
-		}
-		
-		justSum.put([9, 2], HIT);
-		
-		for(dealerCard =3; dealerCard<7; dealerCard++)
+                    Integer[] cards = {handTotal, dealerCard};
+                    justSum.put(cards, Play.HIT);
+                }
+	}
+	
+        Integer[] cardsTwo = {9, 2};
+	justSum.put(cardsTwo, Play.HIT);
+	
+	for(dealerCard =3; dealerCard<7; dealerCard++)
+	{
+                Integer[] cards = {9, dealerCard};
+		justSum.put(cards, Play.DOUBLE_DOWN);               
+	}
+	
+	for(dealerCard = 7; dealerCard<12; dealerCard++)
+	{
+               Integer[] cards = {9, dealerCard};
+               justSum.put(cards, Play.HIT);
+	}
+	
+	for(dealerCard=2; dealerCard<10; dealerCard++)
+	{
+            Integer[] cards = {10, dealerCard};
+            justSum.put(card,Play.DOUBLE_DOWN);
+	}
+	
+        cardsTwo[0] = 10;
+        cardsTwo[1] = 10;
+	justSum.put(cardsTwo, Play.HIT);
+        cardsTwo[1] = 11;
+	justSum.put(cardsTwo, Play.HIT);
+	
+	for(dealerCard =2; dealerCard<11; dealercard++)
+	{
+            Integer[] cards = {11, dealerCard};       
+            justSum.put(cards, Play.DOUBLE_DOWN);
+                
+	}
+	
+        cardsTwo[0] = 11;
+        cardsTwo[1] = 11;
+	justSum.put(cardsTwo, Play.HIT);
+	cardsTwo[0] = 12;
+        cardsTwo[1] = 2;
+	justSum.put(cardsTwo, Play.HIT);
+        cardsTwo[1]= 3;
+	justSum.put(cardsTwo, Play.HIT);
+        cardsTwo[1]= 4;
+	justSum.put(cardsTwo, Play.STAY);
+        cardsTwo[1]=5;
+	justSum.put(cardsTwo, Play.STAY);
+        cardsTwop[1] = 6;
+	justSum.put(cardsTwo, STAY);
+	
+	for(dealerCard =7; dealerCard<12; dealerCard++)
+	{
+            Integer[] cards = {12, dealerCard};
+            justSum.put(cards, Play.HIT);
+	}
+	
+	for(handTotal=13; handTotal<17; handTotal++)
+	{
+		for(dealerCard= 2; dealerCard<7; dealerCard++)
 		{
-			justSum.put([9, dealerCard], DOUBLE_DOWN);
+                    Integer[] cards = {handTotal, dealerCard};
+                    justSum.put(cards, Play.STAY);
 		}
 		
 		for(dealerCard = 7; dealerCard<12; dealerCard++)
 		{
-			justSum.put([9, dealerCard], HIT);
+                    Integer[] cards = {handTotal, dealerCard};
+                    justSum.put(cards, Play.HIT);
 		}
-		
-		for(dealerCard=2; dealerCard<10; dealerCard++)
+	}
+	
+	for(handTotal= 17; handTotal<22; handTotal++)
+	{
+		for(dealerCard=2; dealerCard<12; dealerCard++)
 		{
-			justSum.put([10,dealerCard],DOUBLE_DOWN);
+                    Integer[] cards = {handTotal, dealerCard};
+                    justSum.put(cards, Play.STAY);
 		}
-		
-		justSum.put([10,10], HIT);
-		justSum.put([10,11], HIT);
-		
-		for(dealerCard =2; dealerCard<11; dealercard++)
-		{
-			justSum.put([11,dealerCard], DOUBLE_DOWN);
-		}
-		
-		justSum.put([11,11], HIT);
-		
-		justSum.put([12,2], HIT);
-		justSum.put([12,3], HIT);
-		justSum.put([12,4], STAY);
-		justSum.put([12,5], STAY);
-		justSum.put([12,6], STAY);
-		
-		for(dealerCard =7; dealerCard<12; dealerCard++)
-		{
-			justSum.put([12,dealerCard], HIT);
-		}
-		
-		for(handTotal=13; handTotal<17; handTotal++)
-		{
-			for(dealerCard= 2; dealerCard<7; dealerCard++)
-			{
-				justSum.put([handTotal, dealerCard], STAY);
-			}
-			
-			for(dealerCard = 7; dealerCard<12; dealerCard++)
-			{
-				justSum.put([handTotal, dealerCard], HIT);
-			}
-		}
-		
-		for(handTotal= 17; handTotal<22; handTotal++)
-		{
-			for(dealerCard=2; dealerCard<12; dealerCard++)
-			{
-				justSum.put([handTotal dealerCard] STAY);
-			}
-		}
+	}
     }
     
     private void populateIsPair() {
