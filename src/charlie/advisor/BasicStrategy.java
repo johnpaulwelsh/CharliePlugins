@@ -34,8 +34,8 @@ public class BasicStrategy {
     private void populateJustSum() {
         int handTotal;
 	int dealerCard;
-        //Integer[] cards = new Integer[2];
-		
+
+	//For hands of 5-8	
 	for (handTotal = 5; handTotal<9; handTotal++)
 	{
 		for(dealerCard = 2; dealerCard<12; dealerCard++)
@@ -45,33 +45,39 @@ public class BasicStrategy {
                 }
 	}
 	
+        //for hand of 9 with upcard 2
         Integer[] cardsTwo = {9, 2};
 	justSum.put(cardsTwo, Play.HIT);
 	
+        //For 9 with upcard 3-6
 	for(dealerCard =3; dealerCard<7; dealerCard++)
 	{
                 Integer[] cards = {9, dealerCard};
 		justSum.put(cards, Play.DOUBLE_DOWN);               
 	}
 	
+        //for 9 with upcard 7-A(11)
 	for(dealerCard = 7; dealerCard<12; dealerCard++)
 	{
                Integer[] cards = {9, dealerCard};
                justSum.put(cards, Play.HIT);
 	}
 	
+        //f0r hand of 10 with upcard 2-9
 	for(dealerCard=2; dealerCard<10; dealerCard++)
 	{
             Integer[] cards = {10, dealerCard};
             justSum.put(cards,Play.DOUBLE_DOWN);
 	}
 	
+        //for hand of 10 with upcard 10-11
         cardsTwo[0] = 10;
         cardsTwo[1] = 10;
 	justSum.put(cardsTwo, Play.HIT);
         cardsTwo[1] = 11;
 	justSum.put(cardsTwo, Play.HIT);
 	
+        //for hand of 11 with upcard 2-10
 	for(dealerCard =2; dealerCard<11; dealerCard++)
 	{
             Integer[] cards = {11, dealerCard};       
@@ -79,9 +85,12 @@ public class BasicStrategy {
                 
 	}
 	
+        //for hand of 11 with upcard A(11)
         cardsTwo[0] = 11;
         cardsTwo[1] = 11;
 	justSum.put(cardsTwo, Play.HIT);
+        
+        //for hand of 12 with upcard 2-6
 	cardsTwo[0] = 12;
         cardsTwo[1] = 2;
 	justSum.put(cardsTwo, Play.HIT);
@@ -94,20 +103,24 @@ public class BasicStrategy {
         cardsTwo[1] = 6;
 	justSum.put(cardsTwo, Play.STAY);
 	
+        //for hand of 12, upcard of 7-Ace(11)
 	for(dealerCard =7; dealerCard<12; dealerCard++)
 	{
             Integer[] cards = {12, dealerCard};
             justSum.put(cards, Play.HIT);
 	}
 	
+        //for hand of 13-17
 	for(handTotal=13; handTotal<17; handTotal++)
 	{
+            //for upcard of 2-6
 		for(dealerCard= 2; dealerCard<7; dealerCard++)
 		{
                     Integer[] cards = {handTotal, dealerCard};
                     justSum.put(cards, Play.STAY);
 		}
 		
+                //for upcard of 7-Ace(11)
 		for(dealerCard = 7; dealerCard<12; dealerCard++)
 		{
                     Integer[] cards = {handTotal, dealerCard};
@@ -115,6 +128,7 @@ public class BasicStrategy {
 		}
 	}
 	
+        //a hand of 17 or higher
 	for(handTotal= 17; handTotal<22; handTotal++)
 	{
 		for(dealerCard=2; dealerCard<12; dealerCard++)
