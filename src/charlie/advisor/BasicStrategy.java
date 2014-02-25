@@ -28,7 +28,7 @@ public class BasicStrategy {
         
     }
     
-    // JP
+    // John Paul
     private void populateIsPair() {
         Integer[] cardBundle = new Integer[2];
         
@@ -150,28 +150,59 @@ public class BasicStrategy {
             
     }
     
+    /**
+     * Private method used in getPlay to determine whether a Hand object is
+     * holding an Ace. This will not interfere with the A,A pair hand because
+     * that is covered by a separate HashMap.
+     * @param hand the hand being checked for an Ace
+     * @return the index where the Ace was found, -1 if not found
+     */
+    private int hasAce(Hand hand) {
+        for (int i = 0; i < hand.size(); i++) {
+            if (hand.getCard(i).isAce()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    /**
+     * Method that calls upon the capabilities of the Basic Blackjack Strategy
+     * and advises the player on the best move to make. Called by Advisor.java
+     * @param myHand the player's hand
+     * @param upCard the dealer's face-up card
+     * @return the suggestion for Play
+     */
     public Play getPlay(Hand myHand, Card upCard) {
         Play advisedPlay = Play.NONE;
         Integer[] bundle = new Integer[2];
         
         // If there are two cards in the hand
         if (myHand.size() == 2) {
-            if (myHand.isPair()) { // Check if the cards are a pair (includes A,A)
+            
+            // Check if the cards are a pair (includes A,A)
+            if (myHand.isPair()) {
                 bundle[0] = myHand.getCard(0).value();
                 bundle[1] = upCard.value();
                 advisedPlay = isPair.get(bundle);
-            } else if (myHand.isPair()) { // ACTUALLY IS HAS ACE
-                // lalalalala
-                // lalalalalala
-
-            } else { // Otherwise use sum of the cards
+            
+            // Check whether the player's hand has an Ace
+            } else if (hasAce(myHand) != -1) {
+                bundle[0] = myHand.getCard(hasAce(myHand)).value();
+                bundle[1] = upCard.value();
+                advisedPlay = hasAce.get(bundle);
+            
+            // Otherwise, use the sum of the cards
+            } else {
                 Integer firstValue = myHand.getCard(0).value();
                 Integer secondValue = myHand.getCard(1).value();
                 bundle[0] = firstValue + secondValue;
                 bundle[1] = upCard.value();
                 advisedPlay = justSum.get(bundle);
             }
-        } else { // Use sum of the cards
+            
+        // Otherwise, use the sum of the cards
+        } else {
             Integer firstValue = myHand.getCard(0).value();
             Integer secondValue = myHand.getCard(1).value();
             bundle[0] = firstValue + secondValue;
