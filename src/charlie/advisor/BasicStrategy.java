@@ -9,9 +9,9 @@ import charlie.util.Play;
  * @author Katie Craven and John Paul Welsh
  */
 public class BasicStrategy {
-    private HashMap<Integer[], Play> justSum; // sum of cards' values
-    private HashMap<Integer[], Play> isPair;  // one of the cards' values
-    private HashMap<Integer[], Play> hasAce;  // non-Ace card's value
+    private final HashMap<Integer[], Play> justSum; // sum of cards' values
+    private final HashMap<Integer[], Play> isPair;  // one of the cards' values
+    private final HashMap<Integer[], Play> hasAce;  // non-Ace card's value
     
     public BasicStrategy() {
         justSum = new HashMap();
@@ -221,7 +221,7 @@ public class BasicStrategy {
         }
     }
     
-    // Both
+    // Katie
     private void populateHasAce() {
         //this is acting on the assumption that the comparisons
         //to ACE will be with the card that is not an ace, and 
@@ -231,73 +231,62 @@ public class BasicStrategy {
         Integer notAce;
         Integer dealerCard;
         Integer[] bundleT = new Integer[2];
-        
+
         //for A2-A3
-        for (notAce = 2; notAce<4; notAce++)
-        {
+        for (notAce = 2; notAce < 4; notAce++) {
             //dealer 2-4
-            for(dealerCard=2; dealerCard<5;dealerCard++)
-            {
+            for (dealerCard = 2; dealerCard < 5; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hasAce.put(bundle, Play.HIT);
             }
-            
+
             //dealer 5-6
-            for(dealerCard= 5; dealerCard<7; dealerCard++)
-            {
+            for (dealerCard = 5; dealerCard < 7; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hasAce.put(bundle, Play.DOUBLE_DOWN);
             }
-            
+
             //dealer 7-A(11)
-            for(dealerCard= 7; dealerCard<12; dealerCard++)
-            {
+            for (dealerCard = 7; dealerCard < 12; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hasAce.put(bundle, Play.HIT);
             }
         }
         
         //for A4-A5
-        for (notAce=4; notAce<6; notAce++)
-        {
+        for (notAce=4; notAce<6; notAce++) {
             //dealer hand 2+3
-            for(dealerCard =2; dealerCard<4;dealerCard++)
-            {
+            for(dealerCard =2; dealerCard<4;dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hasAce.put(bundle, Play.HIT);
             }
             
             //dealer hand 4-6
-            for(dealerCard = 4; dealerCard<7; dealerCard++)
-            {
+            for(dealerCard = 4; dealerCard<7; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hasAce.put(bundle, Play.DOUBLE_DOWN);
             }
             
             //hand 7-A(11)
-            for(dealerCard=7; dealerCard<11; dealerCard++)
-            {
+            for(dealerCard=7; dealerCard<11; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hasAce.put(bundle, Play.HIT);
             }
         }
         
         //A6 dealer 2
-        
         bundleT[0] = 6;
         bundleT[1] = 2;
         hasAce.put(bundleT, Play.HIT);
         
         //A6 dealer 3-6
-        for(dealerCard=3; dealerCard<7;dealerCard++)
-        {
+        for(dealerCard=3; dealerCard<7;dealerCard++) {
             Integer[] bundle = {6, dealerCard};
             hasAce.put(bundle, Play.DOUBLE_DOWN);
         }
         
         //A6 dealer 7-A(11)
-        for(dealerCard=7; dealerCard<12; dealerCard++)
-        {
+        for(dealerCard=7; dealerCard<12; dealerCard++) {
             Integer[] bundle = {6, dealerCard};
             hasAce.put(bundle, Play.HIT);
         }
@@ -308,31 +297,26 @@ public class BasicStrategy {
         hasAce.put(bundleT, Play.STAY);
         
         //A7, dealer3-6
-        for(dealerCard=3; dealerCard<7;dealerCard++)
-        {
+        for(dealerCard=3; dealerCard<7;dealerCard++) {
             Integer[] bundle = {7, dealerCard};
             hasAce.put(bundle, Play.DOUBLE_DOWN);
         }
         
         //A7, dealer7-8
-        for(dealerCard = 7;dealerCard<9; dealerCard++)
-        {
+        for(dealerCard = 7;dealerCard<9; dealerCard++) {
             Integer[] bundle = {7, dealerCard};
             hasAce.put(bundle, Play.DOUBLE_DOWN);
         }
         
         //A7, dealer 9-A(11)
-        for (dealerCard=9; dealerCard<12;dealerCard++)
-        {
+        for (dealerCard=9; dealerCard<12;dealerCard++) {
             Integer[] bundle = {7, dealerCard};
             hasAce.put(bundle, Play.HIT);
         }
             
         //A8-A10
-        for (notAce = 8; notAce<11;notAce++)
-        {
-            for(dealerCard=2; dealerCard<12; dealerCard++)
-            {
+        for (notAce = 8; notAce<11;notAce++) {
+            for(dealerCard=2; dealerCard<12; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hasAce.put(bundle, Play.STAY);
             }
@@ -344,15 +328,15 @@ public class BasicStrategy {
      * holding an Ace. This will not interfere with the A,A pair hand because
      * that is covered by a separate HashMap.
      * @param hand the hand being checked for an Ace
-     * @return the index where the Ace was found, -1 if not found
+     * @return the index where the non-Ace card is, -1 if there is no Ace
      */
     private int hasAce(Hand hand) {
-        for (int i = 0; i < hand.size(); i++) {
-            if (hand.getCard(i).isAce()) {
-                return i;
-            }
-        }
-        return -1;
+        // If the first card is an Ace, return the other card's index
+        if (hand.getCard(0).isAce())        return 1;
+        // If the second card is an Ace, return the other card's index
+        else if (hand.getCard(1).isAce())   return 0;
+        // Neither card is an Ace, so we return -1
+        else                                return -1;
     }
     
     /**
@@ -367,9 +351,8 @@ public class BasicStrategy {
         Integer[] bundle = new Integer[2];
         
         // If there are two cards in the hand
-        if (myHand.size() == 2) {
+        if (myHand.size() <= 2) {
             
-            /*
             // Check if the cards are a pair (includes A,A)
             if (myHand.isPair()) {
                 bundle[0] = myHand.getCard(0).value();
@@ -388,19 +371,6 @@ public class BasicStrategy {
                 bundle[1] = upCard.value();
                 advisedPlay = justSum.get(bundle);
             }
-            */
-            // Check if the cards are a pair (includes A,A)
-            if (myHand.isPair()) {
-                bundle[0] = myHand.getCard(0).value();
-                bundle[1] = upCard.value();
-                advisedPlay = isPair.get(bundle);
-            
-            // Otherwise, use the sum of the cards
-            } else {
-                bundle[0] = (Integer)myHand.getValue();
-                bundle[1] = (Integer)upCard.value();
-                advisedPlay = justSum.get(bundle);
-            }
             
         // Otherwise, use the sum of the cards
         } else {
@@ -408,6 +378,12 @@ public class BasicStrategy {
             bundle[1] = (Integer)upCard.value();
             advisedPlay = justSum.get(bundle);
         }
+        
+        System.console().printf("advised play is " + advisedPlay.toString());
+        
+        advisedPlay = Play.DOUBLE_DOWN;
+        
+        System.console().printf("advised play is " + advisedPlay.toString());
         
         return advisedPlay;
     }
