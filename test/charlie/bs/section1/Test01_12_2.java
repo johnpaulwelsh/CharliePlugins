@@ -1,4 +1,4 @@
-package charlie.bs.section2;
+package charlie.bs.section1;
 
 import charlie.advisor.Advisor;
 import charlie.card.Card;
@@ -18,11 +18,11 @@ import static org.junit.Assert.*;
  *
  * @author John Paul Welsh
  */
-public class Test01_5_7 {
+public class Test01_12_2 {
     
     private static IAdvisor advisor;
     
-    public Test01_5_7() {
+    public Test01_12_2() {
     }
     
     @BeforeClass
@@ -43,17 +43,17 @@ public class Test01_5_7 {
     }
     
     @Test
-    public void Hand_5_Up_7() {
+    public void Hand_12_Up_2() {
         Hid hid = new Hid(Seat.YOU, 1.0, 1.5);
         Hand hand = new Hand(hid);
         
-        // Hand total = 7
-        hand.hit(new Card(3, Card.Suit.HEARTS));
-        hand.hit(new Card(4, Card.Suit.HEARTS));
+        // Hand total = 18
+        hand.hit(new Card(10, Card.Suit.HEARTS));
+        hand.hit(new Card(8, Card.Suit.HEARTS));
         
-        // Up card = Ace
-        Play result = advisor.advise(hand, new Card(11, Card.Suit.HEARTS));
-        Play expectedPlay = Play.HIT;
+        // Up card = 5
+        Play result = advisor.advise(hand, new Card(5, Card.Suit.HEARTS));
+        Play expectedPlay = Play.STAY;
         
         assertEquals(expectedPlay, result);
     }

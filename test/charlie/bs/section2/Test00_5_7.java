@@ -18,11 +18,11 @@ import static org.junit.Assert.*;
  *
  * @author John Paul Welsh
  */
-public class Test01_5_7 {
+public class Test00_5_7 {
     
     private static IAdvisor advisor;
     
-    public Test01_5_7() {
+    public Test00_5_7() {
     }
     
     @BeforeClass

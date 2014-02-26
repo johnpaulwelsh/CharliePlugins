@@ -26,7 +26,7 @@ public class BasicStrategy {
     
     // Katie
     private void populateJustSum() {
-        Integer handTotal; //total for hand
+        Integer handTotal;
 	Integer dealerCard;
         Integer hashVal;
         
@@ -296,10 +296,12 @@ public class BasicStrategy {
     
     // Katie
     private void populateHasAce() {
-        //this is acting on the assumption that the comparisons
-        //to ACE will be with the card that is not an ace, and 
-        //instead we have an array of [notAceCard, dealerCard]
-        //doesnt include AA
+        /*
+        This is acting on the assumption that the comparisons
+        to ACE will be with the card that is not an ace, and 
+        instead we have an array of [notAceCard, dealerCard].
+        Doesn't include AA.
+        */
         
         Integer notAce;
         Integer dealerCard;

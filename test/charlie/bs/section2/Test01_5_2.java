@@ -18,11 +18,11 @@ import static org.junit.Assert.*;
  *
  * @author John Paul Welsh
  */
-public class Test01_5_7 {
+public class Test01_5_2 {
     
     private static IAdvisor advisor;
     
-    public Test01_5_7() {
+    public Test01_5_2() {
     }
     
     @BeforeClass
@@ -43,17 +43,17 @@ public class Test01_5_7 {
     }
     
     @Test
-    public void Hand_5_Up_7() {
+    public void Hand_5_Up_2() {
         Hid hid = new Hid(Seat.YOU, 1.0, 1.5);
         Hand hand = new Hand(hid);
         
-        // Hand total = 7
+        // Hand total = 9
         hand.hit(new Card(3, Card.Suit.HEARTS));
-        hand.hit(new Card(4, Card.Suit.HEARTS));
+        hand.hit(new Card(6, Card.Suit.HEARTS));
         
-        // Up card = Ace
-        Play result = advisor.advise(hand, new Card(11, Card.Suit.HEARTS));
-        Play expectedPlay = Play.HIT;
+        // Up card = 4
+        Play result = advisor.advise(hand, new Card(4, Card.Suit.HEARTS));
+        Play expectedPlay = Play.DOUBLE_DOWN;
         
         assertEquals(expectedPlay, result);
     }

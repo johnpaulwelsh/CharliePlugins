@@ -1,11 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package charlie.bs.section4;
 
+import charlie.advisor.Advisor;
+import charlie.card.Card;
+import charlie.card.Hand;
+import charlie.card.Hid;
+import charlie.dealer.Seat;
+import charlie.plugin.IAdvisor;
+import charlie.util.Play;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,15 +16,18 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author JP
+ * @author John Paul Welsh
  */
 public class Test01_22_7 {
+    
+    private static IAdvisor advisor;
     
     public Test01_22_7() {
     }
     
     @BeforeClass
     public static void setUpClass() {
+        advisor = new Advisor();
     }
     
     @AfterClass
@@ -37,10 +41,20 @@ public class Test01_22_7 {
     @After
     public void tearDown() {
     }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
+    
+    @Test
+    public void Hand_22_Up_7() {
+        Hid hid = new Hid(Seat.YOU, 1.0, 1.5);
+        Hand hand = new Hand(hid);
+        
+        // Hand comp = 7, 7
+        hand.hit(new Card(7, Card.Suit.HEARTS));
+        hand.hit(new Card(7, Card.Suit.SPADES));
+        
+        // Up card = 9
+        Play result = advisor.advise(hand, new Card(9, Card.Suit.HEARTS));
+        Play expectedPlay = Play.HIT;
+        
+        assertEquals(expectedPlay, result);
+    }
 }
