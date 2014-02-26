@@ -48,8 +48,8 @@ public class Test01_22_2 {
         Hand hand = new Hand(hid);
         
         // Hand comp = A, A
-        hand.hit(new Card(11, Card.Suit.HEARTS));
-        hand.hit(new Card(11, Card.Suit.SPADES));
+        hand.hit(new Card(1, Card.Suit.HEARTS));
+        hand.hit(new Card(1, Card.Suit.SPADES));
         
         // Up card = 3
         Play result = advisor.advise(hand, new Card(3, Card.Suit.CLUBS));

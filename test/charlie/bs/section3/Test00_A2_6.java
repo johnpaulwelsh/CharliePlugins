@@ -48,7 +48,7 @@ public class Test00_A2_6 {
         Hand hand = new Hand(hid);
         
         // Hand comp = Ace, 7
-        hand.hit(new Card(11, Card.Suit.HEARTS));
+        hand.hit(new Card(1, Card.Suit.HEARTS));
         hand.hit(new Card(7, Card.Suit.HEARTS));
         
         // Up card = 3

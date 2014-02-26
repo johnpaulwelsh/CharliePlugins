@@ -154,9 +154,10 @@ public class BasicStrategy {
     private void populateIsPair() {
         Integer[] cardBundle = new Integer[2];
         Integer hashVal;
+        Integer up;
         
         // case for As
-        for (int up = 1; up <= 10; up++) {
+        for (up = 1; up <= 10; up++) {
             Integer[] cb = {1, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.SPLIT);
@@ -167,12 +168,12 @@ public class BasicStrategy {
         cardBundle[1] = 1;
         hashVal = Arrays.hashCode(cardBundle);
         isPair.put(hashVal, Play.HIT);
-        for (int up = 2; up <= 7; up++) {
+        for (up = 2; up <= 7; up++) {
             Integer[] cb = {2, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.SPLIT);
         }
-        for (int up = 8; up <= 10; up++) {
+        for (up = 8; up <= 10; up++) {
             Integer[] cb = {2, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.HIT);
@@ -183,29 +184,29 @@ public class BasicStrategy {
         cardBundle[1] = 1;
         hashVal = Arrays.hashCode(cardBundle);
         isPair.put(hashVal, Play.HIT);
-        for (int up = 2; up <= 7; up++) {
+        for (up = 2; up <= 7; up++) {
             Integer[] cb = {3, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.SPLIT);
         }
-        for (int up = 8; up <= 10; up++) {
+        for (up = 8; up <= 10; up++) {
             Integer[] cb = {3, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.HIT);
         }
         
         // case for 4s
-        for (int up = 1; up <= 4; up++) {
+        for (up = 1; up <= 4; up++) {
             Integer[] cb = {4, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.HIT);
         }
-        for (int up = 5; up <= 6; up++) {
+        for (up = 5; up <= 6; up++) {
             Integer[] cb = {4, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.SPLIT);
         }
-        for (int up = 7; up <= 10; up++) {
+        for (up = 7; up <= 10; up++) {
             Integer[] cb = {4, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.HIT);
@@ -219,7 +220,7 @@ public class BasicStrategy {
         cardBundle[1] = 10;
         hashVal = Arrays.hashCode(cardBundle);
         isPair.put(hashVal, Play.HIT);
-        for (int up = 2; up <= 9; up++) {
+        for (up = 2; up <= 9; up++) {
             Integer[] cb = {5, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.DOUBLE_DOWN);
@@ -230,12 +231,12 @@ public class BasicStrategy {
         cardBundle[1] = 1;
         hashVal = Arrays.hashCode(cardBundle);
         isPair.put(hashVal, Play.HIT);
-        for (int up = 2; up <= 6; up++) {
+        for (up = 2; up <= 6; up++) {
             Integer[] cb = {6, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.SPLIT);
         }
-        for (int up = 7; up <= 10; up++) {
+        for (up = 7; up <= 10; up++) {
             Integer[] cb = {6, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.HIT);
@@ -246,19 +247,19 @@ public class BasicStrategy {
         cardBundle[1] = 1;
         hashVal = Arrays.hashCode(cardBundle);
         isPair.put(hashVal, Play.HIT);
-        for (int up = 2; up <= 7; up++) {
+        for (up = 2; up <= 7; up++) {
             Integer[] cb = {7, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.SPLIT);
         }
-        for (int up = 8; up <= 10; up++) {
+        for (up = 8; up <= 10; up++) {
             Integer[] cb = {7, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.HIT);
         }
 
         // case for 8s
-        for (int up = 1; up <= 10; up++) {
+        for (up = 1; up <= 10; up++) {
             Integer[] cb = {8, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.SPLIT);
@@ -269,7 +270,7 @@ public class BasicStrategy {
         cardBundle[1] = 1;
         hashVal = Arrays.hashCode(cardBundle);
         isPair.put(hashVal, Play.HIT);
-        for (int up = 2; up <= 6; up++) {
+        for (up = 2; up <= 6; up++) {
             Integer[] cb = {9, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.SPLIT);
@@ -277,7 +278,7 @@ public class BasicStrategy {
         cardBundle[1] = 7;
         hashVal = Arrays.hashCode(cardBundle);
         isPair.put(hashVal, Play.HIT);
-        for (int up = 8; up <= 9; up++) {
+        for (up = 8; up <= 9; up++) {
             Integer[] cb = {9, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.SPLIT);
@@ -287,7 +288,7 @@ public class BasicStrategy {
         isPair.put(hashVal, Play.HIT);
         
         // case for 10s
-        for (int up = 1; up <= 10; up++) {
+        for (up = 1; up <= 10; up++) {
             Integer[] cb = {10, up};
             hashVal = Arrays.hashCode(cb);
             isPair.put(hashVal, Play.STAY);
@@ -422,11 +423,14 @@ public class BasicStrategy {
      */
     private int hasAce(Hand hand) {
         // If the first card is an Ace, return the other card's index
-        if (hand.getCard(0).isAce())        return 1;
+        if (hand.getCard(0).isAce())
+            return 1;
         // If the second card is an Ace, return the other card's index
-        else if (hand.getCard(1).isAce())   return 0;
+        else if (hand.getCard(1).isAce())
+            return 0;
         // Neither card is an Ace, so we return -1
-        else                                return -1;
+        else
+            return -1;
     }
     
     /**

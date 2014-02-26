@@ -52,7 +52,7 @@ public class Test01_5_7 {
         hand.hit(new Card(4, Card.Suit.HEARTS));
         
         // Up card = Ace
-        Play result = advisor.advise(hand, new Card(11, Card.Suit.HEARTS));
+        Play result = advisor.advise(hand, new Card(1, Card.Suit.HEARTS));
         Play expectedPlay = Play.HIT;
         
         assertEquals(expectedPlay, result);
