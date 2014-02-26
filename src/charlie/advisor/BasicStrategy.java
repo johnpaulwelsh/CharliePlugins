@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 /**
  * @author Katie Craven and John Paul Welsh
+ * ATTENTION: ACE IS REPRESENTED WITH A 1 IN ALL OF THIS CODE
  */
 public class BasicStrategy {
     private final HashMap<Integer, Play> justSum; // sum of cards' values
@@ -24,56 +25,55 @@ public class BasicStrategy {
         populateHasAce();
     }
     
-    // Katie
+    // Katie and John Paul
     private void populateJustSum() {
         Integer handTotal;
 	Integer dealerCard;
         Integer hashVal;
-        
+        Integer[] cardsTwo = new Integer[2];
         
         //For a hand of 5-8
-	for (handTotal = 5; handTotal<9; handTotal++) {
-            //for dealer upcard of 2-11(ace)
-            for(dealerCard = 2; dealerCard<12; dealerCard++) {
+        for (handTotal = 5; handTotal<9; handTotal++) {
+            //for dealer upcard of 1-10
+            for(dealerCard = 1; dealerCard<11; dealerCard++) {
                 Integer[] cards = {handTotal, dealerCard};
                 hashVal = Arrays.hashCode(cards);
                 justSum.put(hashVal, Play.HIT);
             }
 	}
-	
-        //For a hand of 9 with dealer upcard of 2
-        Integer[] cardsTwo = {9, 2};
-        hashVal = Arrays.hashCode(cardsTwo);
-	justSum.put(hashVal, Play.HIT);
         
+        //For a hand of 9 with dealer upcard of A or 2
+        for (dealerCard=1; dealerCard<3; dealerCard++) {
+            Integer[] cardPack = {9, dealerCard};
+            hashVal = Arrays.hashCode(cardPack);
+            justSum.put(hashVal, Play.HIT);
+        }
         //for a hand of 9 with dealer upcard 3-6
 	for(dealerCard =3; dealerCard<7; dealerCard++) {
             Integer[] cards = {9, dealerCard};
             hashVal = Arrays.hashCode(cards);
             justSum.put(hashVal, Play.DOUBLE_DOWN);
 	}
-	
-        //for a hand of 9 with a dealer upcard of 7-11(ace)
-	for(dealerCard = 7; dealerCard<12; dealerCard++) {
+        //for a hand of 9 with a dealer upcard of 7-10
+	for(dealerCard = 7; dealerCard<11; dealerCard++) {
             Integer[] cards = {9, dealerCard};
             hashVal = Arrays.hashCode(cards);
             justSum.put(hashVal, Play.HIT);
 	}
-	
+        	
         //for a hand of 10 with a dealer upcard 2-9
 	for(dealerCard=2; dealerCard<10; dealerCard++) {
             Integer[] cards = {10, dealerCard};
             hashVal = Arrays.hashCode(cards);
             justSum.put(hashVal,Play.DOUBLE_DOWN);
-	}
-	
+        }
         //for hand of 10 with dealer upcard of 10
         cardsTwo[0] = 10;
         cardsTwo[1] = 10;
         hashVal = Arrays.hashCode(cardsTwo);
 	justSum.put(hashVal, Play.HIT);
-        //for a hand of 10 with a dealer upcard of 11(ace)
-        cardsTwo[1] = 11;
+        //for a hand of 10 with a dealer upcard of 1 (ace)
+        cardsTwo[1] = 1;
         hashVal = Arrays.hashCode(cardsTwo);
 	justSum.put(hashVal, Play.HIT);
 	
@@ -82,16 +82,19 @@ public class BasicStrategy {
             Integer[] cards = {11, dealerCard};
             hashVal = Arrays.hashCode(cards);
             justSum.put(hashVal, Play.DOUBLE_DOWN);
-	}
-	
-        //for a hand of 11 with a dealer upcard of 11(ace)
+        }
+        //for a hand of 11 with a dealer upcard of 1 (ace)
         cardsTwo[0] = 11;
-        cardsTwo[1] = 11;
+        cardsTwo[1] = 1;
         hashVal = Arrays.hashCode(cardsTwo);
         justSum.put(hashVal, Play.HIT);
         
-        //for a hand of 12 with a dealer upcard of 2
+        //for a hand of 12 with a dealer upcard of 1 (ace)
         cardsTwo[0] = 12;
+        cardsTwo[1] = 1;
+        hashVal = Arrays.hashCode(cardsTwo);
+        justSum.put(hashVal, Play.HIT);
+        //for a hand of 12 with a dealer upcard of 2
         cardsTwo[1] = 2;
         hashVal = Arrays.hashCode(cardsTwo);
         //for a hand of 12 with a dealer upcard of 3
@@ -99,24 +102,20 @@ public class BasicStrategy {
         cardsTwo[1] = 3;
         hashVal = Arrays.hashCode(cardsTwo);
         justSum.put(hashVal, Play.HIT);
-        
         //for a hand of 12 with a dealer upcard of 4
         cardsTwo[1] = 4;
         hashVal = Arrays.hashCode(cardsTwo);
         justSum.put(hashVal, Play.STAY);
-        
         //for a hand of 12 with a dealer upcard of 5
         cardsTwo[1] = 5;
         hashVal = Arrays.hashCode(cardsTwo);
         justSum.put(hashVal, Play.STAY);
-        
         //for a hand of 12 with a dealer upcard of 6
         cardsTwo[1] = 6;
         hashVal = Arrays.hashCode(cardsTwo);
         justSum.put(hashVal, Play.STAY);
-
-        //for a hand of 12 with a dealer upcard of 7-11(ace)
-        for (dealerCard = 7; dealerCard < 12; dealerCard++) {
+        //for a hand of 12 with a dealer upcard of 7-10
+        for (dealerCard = 7; dealerCard < 11; dealerCard++) {
             Integer[] cards = {12, dealerCard};
             hashVal = Arrays.hashCode(cards);
             justSum.put(hashVal, Play.HIT);
@@ -130,19 +129,22 @@ public class BasicStrategy {
                 hashVal = Arrays.hashCode(cards);
                 justSum.put(hashVal, Play.STAY);
             }
-
-            //for a dealer upcard of 7-11(ace)
-            for (dealerCard = 7; dealerCard < 12; dealerCard++) {
+            //for a dealer upcard of 7-10
+            for (dealerCard = 7; dealerCard < 11; dealerCard++) {
                 Integer[] cards = {handTotal, dealerCard};
                 hashVal = Arrays.hashCode(cards);
                 justSum.put(hashVal, Play.HIT);
             }
+            // for a dealer upcard of Ace
+            Integer[] cardPack = {handTotal, 1};
+            hashVal = Arrays.hashCode(cardPack);
+            justSum.put(hashVal, Play.HIT);
         }
 
         //for a hand of 17+ 
         for (handTotal = 17; handTotal < 22; handTotal++) {
-            //for dealer upcard 2-11(ace)
-            for (dealerCard = 2; dealerCard < 12; dealerCard++) {
+            //for dealer upcard Ace-10
+            for (dealerCard = 1; dealerCard < 11; dealerCard++) {
                 Integer[] cards = {handTotal, dealerCard};
                 hashVal = Arrays.hashCode(cards);
                 justSum.put(hashVal, Play.STAY);
@@ -441,7 +443,6 @@ public class BasicStrategy {
      * @return the suggestion for Play
      */
     public Play getPlay(Hand myHand, Card upCard) {
-        //Play advisedPlay;
         Integer[] bundle = new Integer[2];
         Integer hashValz;
         
@@ -450,27 +451,24 @@ public class BasicStrategy {
             
             // Check if the cards are a pair (includes A,A)
             if (myHand.isPair()) {
-                bundle[0] = myHand.getCard(0).value();
-                bundle[1] = upCard.value();
+                bundle[0] = (Integer)myHand.getCard(0).value();
+                bundle[1] = (Integer)upCard.value();
                 hashValz = Arrays.hashCode(bundle);
                 return isPair.get(hashValz);
             
             // Check whether the player's hand has an Ace
             } else if (hasAce(myHand) != -1) {
-                bundle[0] = myHand.getCard(hasAce(myHand)).value();
-                bundle[1] = upCard.value();
-                //return Play.DOUBLE_DOWN;
+                bundle[0] = (Integer)myHand.getCard(hasAce(myHand)).value();
+                bundle[1] = (Integer)upCard.value();
                 hashValz = Arrays.hashCode(bundle);
                 return hasAce.get(hashValz);
             
             // Otherwise, use the sum of the cards
             } else {
-                bundle[0] = myHand.getValue();
-                bundle[1] = upCard.value();
-                //Integer[] hard = {17, 10};
+                bundle[0] = (Integer)myHand.getValue();
+                bundle[1] = (Integer)upCard.value();
                 hashValz = Arrays.hashCode(bundle);
                 return justSum.get(hashValz);
-                //return justSum.get(bundle);
             }
             
         // Otherwise, use the sum of the cards

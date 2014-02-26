@@ -43,16 +43,16 @@ public class Test01_22_2 {
     }
     
     @Test
-    public void Hand_22_Up_2() {
+    public void Test01_Hand_22_Up_2() {
         Hid hid = new Hid(Seat.YOU, 1.0, 1.5);
         Hand hand = new Hand(hid);
         
-        // Hand comp = A, A
-        hand.hit(new Card(1, Card.Suit.HEARTS));
-        hand.hit(new Card(1, Card.Suit.SPADES));
+        // Hand comp = 8, 8
+        hand.hit(new Card(8, Card.Suit.HEARTS));
+        hand.hit(new Card(8, Card.Suit.SPADES));
         
-        // Up card = 3
-        Play result = advisor.advise(hand, new Card(3, Card.Suit.CLUBS));
+        // Up card = 9
+        Play result = advisor.advise(hand, new Card(9, Card.Suit.CLUBS));
         Play expectedPlay = Play.SPLIT;
         
         assertEquals(expectedPlay, result);

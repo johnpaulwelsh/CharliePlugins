@@ -43,7 +43,7 @@ public class Test01_5_2 {
     }
     
     @Test
-    public void Hand_5_Up_2() {
+    public void Test01_Hand_5_Up_2() {
         Hid hid = new Hid(Seat.YOU, 1.0, 1.5);
         Hand hand = new Hand(hid);
         
@@ -52,8 +52,8 @@ public class Test01_5_2 {
         hand.hit(new Card(4, Card.Suit.HEARTS));
         
         // Up card = 2
-        Play result = advisor.advise(hand, new Card(4, Card.Suit.SPADES));
-        Play expectedPlay = Play.DOUBLE_DOWN;
+        Play result = advisor.advise(hand, new Card(2, Card.Suit.SPADES));
+        Play expectedPlay = Play.HIT;
         
         assertEquals(expectedPlay, result);
     }

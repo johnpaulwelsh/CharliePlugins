@@ -43,7 +43,7 @@ public class Test00_22_2 {
     }
     
     @Test
-    public void Hand_22_Up_2() {
+    public void Test00_Hand_22_Up_2() {
         Hid hid = new Hid(Seat.YOU, 1.0, 1.5);
         Hand hand = new Hand(hid);
         

@@ -43,15 +43,15 @@ public class Test01_22_7 {
     }
     
     @Test
-    public void Hand_22_Up_7() {
+    public void Test01_Hand_22_Up_7() {
         Hid hid = new Hid(Seat.YOU, 1.0, 1.5);
         Hand hand = new Hand(hid);
         
-        // Hand comp = 7, 7
+        // Hand comp = 4, 4
         hand.hit(new Card(7, Card.Suit.HEARTS));
         hand.hit(new Card(7, Card.Suit.SPADES));
         
-        // Up card = 9
+        // Up card = 8
         Play result = advisor.advise(hand, new Card(9, Card.Suit.HEARTS));
         Play expectedPlay = Play.HIT;
         
