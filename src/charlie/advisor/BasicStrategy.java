@@ -4,14 +4,15 @@ import java.util.HashMap;
 import charlie.card.Card;
 import charlie.card.Hand;
 import charlie.util.Play;
+import java.util.Arrays;
 
 /**
  * @author Katie Craven and John Paul Welsh
  */
 public class BasicStrategy {
-    private final HashMap<Integer[], Play> justSum; // sum of cards' values
-    private final HashMap<Integer[], Play> isPair;  // one of the cards' values
-    private final HashMap<Integer[], Play> hasAce;  // non-Ace card's value
+    private final HashMap<Integer, Play> justSum; // sum of cards' values
+    private final HashMap<Integer, Play> isPair;  // one of the cards' values
+    private final HashMap<Integer, Play> hasAce;  // non-Ace card's value
     
     public BasicStrategy() {
         justSum = new HashMap();
@@ -27,79 +28,124 @@ public class BasicStrategy {
     private void populateJustSum() {
         Integer handTotal; //total for hand
 	Integer dealerCard;
-        	
+        Integer hashVal;
+        
+        
+        //For a hand of 5-8
 	for (handTotal = 5; handTotal<9; handTotal++) {
+            //for dealer upcard of 2-11(ace)
             for(dealerCard = 2; dealerCard<12; dealerCard++) {
                 Integer[] cards = {handTotal, dealerCard};
-                justSum.put(cards, Play.HIT);
+                hashVal = Arrays.hashCode(cards);
+                justSum.put(hashVal, Play.HIT);
             }
 	}
 	
+        //For a hand of 9 with dealer upcard of 2
         Integer[] cardsTwo = {9, 2};
-	justSum.put(cardsTwo, Play.HIT);
+        hashVal = Arrays.hashCode(cardsTwo);
+	justSum.put(hashVal, Play.HIT);
         
+        //for a hand of 9 with dealer upcard 3-6
 	for(dealerCard =3; dealerCard<7; dealerCard++) {
             Integer[] cards = {9, dealerCard};
-            justSum.put(cards, Play.DOUBLE_DOWN);
+            hashVal = Arrays.hashCode(cards);
+            justSum.put(hashVal, Play.DOUBLE_DOWN);
 	}
 	
+        //for a hand of 9 with a dealer upcard of 7-11(ace)
 	for(dealerCard = 7; dealerCard<12; dealerCard++) {
             Integer[] cards = {9, dealerCard};
-            justSum.put(cards, Play.HIT);
+            hashVal = Arrays.hashCode(cards);
+            justSum.put(hashVal, Play.HIT);
 	}
 	
+        //for a hand of 10 with a dealer upcard 2-9
 	for(dealerCard=2; dealerCard<10; dealerCard++) {
             Integer[] cards = {10, dealerCard};
-            justSum.put(cards,Play.DOUBLE_DOWN);
+            hashVal = Arrays.hashCode(cards);
+            justSum.put(hashVal,Play.DOUBLE_DOWN);
 	}
 	
+        //for hand of 10 with dealer upcard of 10
         cardsTwo[0] = 10;
         cardsTwo[1] = 10;
-	justSum.put(cardsTwo, Play.HIT);
+        hashVal = Arrays.hashCode(cardsTwo);
+	justSum.put(hashVal, Play.HIT);
+        //for a hand of 10 with a dealer upcard of 11(ace)
         cardsTwo[1] = 11;
-	justSum.put(cardsTwo, Play.HIT);
+        hashVal = Arrays.hashCode(cardsTwo);
+	justSum.put(hashVal, Play.HIT);
 	
+        //for a hand of 11 with a dealer upcard 2-10
 	for(dealerCard =2; dealerCard<11; dealerCard++) {
-            Integer[] cards = {11, dealerCard};       
-            justSum.put(cards, Play.DOUBLE_DOWN);
+            Integer[] cards = {11, dealerCard};
+            hashVal = Arrays.hashCode(cards);
+            justSum.put(hashVal, Play.DOUBLE_DOWN);
 	}
 	
+        //for a hand of 11 with a dealer upcard of 11(ace)
         cardsTwo[0] = 11;
         cardsTwo[1] = 11;
-        justSum.put(cardsTwo, Play.HIT);
+        hashVal = Arrays.hashCode(cardsTwo);
+        justSum.put(hashVal, Play.HIT);
+        
+        //for a hand of 12 with a dealer upcard of 2
         cardsTwo[0] = 12;
         cardsTwo[1] = 2;
-        justSum.put(cardsTwo, Play.HIT);
+        hashVal = Arrays.hashCode(cardsTwo);
+        //for a hand of 12 with a dealer upcard of 3
+        justSum.put(hashVal, Play.HIT);
         cardsTwo[1] = 3;
-        justSum.put(cardsTwo, Play.HIT);
+        hashVal = Arrays.hashCode(cardsTwo);
+        justSum.put(hashVal, Play.HIT);
+        
+        //for a hand of 12 with a dealer upcard of 4
         cardsTwo[1] = 4;
-        justSum.put(cardsTwo, Play.STAY);
+        hashVal = Arrays.hashCode(cardsTwo);
+        justSum.put(hashVal, Play.STAY);
+        
+        //for a hand of 12 with a dealer upcard of 5
         cardsTwo[1] = 5;
-        justSum.put(cardsTwo, Play.STAY);
+        hashVal = Arrays.hashCode(cardsTwo);
+        justSum.put(hashVal, Play.STAY);
+        
+        //for a hand of 12 with a dealer upcard of 6
         cardsTwo[1] = 6;
-        justSum.put(cardsTwo, Play.STAY);
+        hashVal = Arrays.hashCode(cardsTwo);
+        justSum.put(hashVal, Play.STAY);
 
+        //for a hand of 12 with a dealer upcard of 7-11(ace)
         for (dealerCard = 7; dealerCard < 12; dealerCard++) {
             Integer[] cards = {12, dealerCard};
-            justSum.put(cards, Play.HIT);
+            hashVal = Arrays.hashCode(cards);
+            justSum.put(hashVal, Play.HIT);
         }
 
+        //for a hand of 13
         for (handTotal = 13; handTotal < 17; handTotal++) {
+            //for a dealer upcard of 2-6
             for (dealerCard = 2; dealerCard < 7; dealerCard++) {
                 Integer[] cards = {handTotal, dealerCard};
-                justSum.put(cards, Play.STAY);
+                hashVal = Arrays.hashCode(cards);
+                justSum.put(hashVal, Play.STAY);
             }
 
+            //for a dealer upcard of 7-11(ace)
             for (dealerCard = 7; dealerCard < 12; dealerCard++) {
                 Integer[] cards = {handTotal, dealerCard};
-                justSum.put(cards, Play.HIT);
+                hashVal = Arrays.hashCode(cards);
+                justSum.put(hashVal, Play.HIT);
             }
         }
 
+        //for a hand of 17+ 
         for (handTotal = 17; handTotal < 22; handTotal++) {
+            //for dealer upcard 2-11(ace)
             for (dealerCard = 2; dealerCard < 12; dealerCard++) {
                 Integer[] cards = {handTotal, dealerCard};
-                justSum.put(cards, Play.STAY);
+                hashVal = Arrays.hashCode(cards);
+                justSum.put(hashVal, Play.STAY);
             }
         }
     }
@@ -107,117 +153,144 @@ public class BasicStrategy {
     // John Paul
     private void populateIsPair() {
         Integer[] cardBundle = new Integer[2];
+        Integer hashVal;
         
         // case for As
         for (int up = 1; up <= 10; up++) {
             Integer[] cb = {1, up};
-            isPair.put(cb, Play.SPLIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.SPLIT);
         }
         
         // case for 2s
         cardBundle[0] = 2;
         cardBundle[1] = 1;
-        isPair.put(cardBundle, Play.HIT);
+        hashVal = Arrays.hashCode(cardBundle);
+        isPair.put(hashVal, Play.HIT);
         for (int up = 2; up <= 7; up++) {
             Integer[] cb = {2, up};
-            isPair.put(cb, Play.SPLIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.SPLIT);
         }
         for (int up = 8; up <= 10; up++) {
             Integer[] cb = {2, up};
-            isPair.put(cb, Play.HIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.HIT);
         }
         
         // case for 3s
         cardBundle[0] = 2;
         cardBundle[1] = 1;
-        isPair.put(cardBundle, Play.HIT);
+        hashVal = Arrays.hashCode(cardBundle);
+        isPair.put(hashVal, Play.HIT);
         for (int up = 2; up <= 7; up++) {
             Integer[] cb = {3, up};
-            isPair.put(cb, Play.SPLIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.SPLIT);
         }
         for (int up = 8; up <= 10; up++) {
             Integer[] cb = {3, up};
-            isPair.put(cb, Play.HIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.HIT);
         }
         
         // case for 4s
         for (int up = 1; up <= 4; up++) {
             Integer[] cb = {4, up};
-            isPair.put(cb, Play.HIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.HIT);
         }
         for (int up = 5; up <= 6; up++) {
             Integer[] cb = {4, up};
-            isPair.put(cb, Play.SPLIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.SPLIT);
         }
         for (int up = 7; up <= 10; up++) {
-            Integer[] cb = {3, up};
-            isPair.put(cb, Play.HIT);
+            Integer[] cb = {4, up};
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.HIT);
         }
 
         // case for 5s
         cardBundle[0] = 5;
         cardBundle[1] = 1;
-        isPair.put(cardBundle, Play.HIT);
+        hashVal = Arrays.hashCode(cardBundle);
+        isPair.put(hashVal, Play.HIT);
         cardBundle[1] = 10;
-        isPair.put(cardBundle, Play.HIT);
+        hashVal = Arrays.hashCode(cardBundle);
+        isPair.put(hashVal, Play.HIT);
         for (int up = 2; up <= 9; up++) {
             Integer[] cb = {5, up};
-            isPair.put(cb, Play.DOUBLE_DOWN);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.DOUBLE_DOWN);
         }
         
         // case for 6s
         cardBundle[0] = 6;
         cardBundle[1] = 1;
-        isPair.put(cardBundle, Play.HIT);
+        hashVal = Arrays.hashCode(cardBundle);
+        isPair.put(hashVal, Play.HIT);
         for (int up = 2; up <= 6; up++) {
             Integer[] cb = {6, up};
-            isPair.put(cb, Play.SPLIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.SPLIT);
         }
         for (int up = 7; up <= 10; up++) {
             Integer[] cb = {6, up};
-            isPair.put(cb, Play.HIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.HIT);
         }
         
         // case for 7s
         cardBundle[0] = 7;
         cardBundle[1] = 1;
-        isPair.put(cardBundle, Play.HIT);
+        hashVal = Arrays.hashCode(cardBundle);
+        isPair.put(hashVal, Play.HIT);
         for (int up = 2; up <= 7; up++) {
             Integer[] cb = {7, up};
-            isPair.put(cb, Play.SPLIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.SPLIT);
         }
         for (int up = 8; up <= 10; up++) {
             Integer[] cb = {7, up};
-            isPair.put(cb, Play.HIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.HIT);
         }
 
         // case for 8s
         for (int up = 1; up <= 10; up++) {
             Integer[] cb = {8, up};
-            isPair.put(cb, Play.SPLIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.SPLIT);
         }
         
         // case for 9s
         cardBundle[0] = 9;
         cardBundle[1] = 1;
-        isPair.put(cardBundle, Play.HIT);
+        hashVal = Arrays.hashCode(cardBundle);
+        isPair.put(hashVal, Play.HIT);
         for (int up = 2; up <= 6; up++) {
             Integer[] cb = {9, up};
-            isPair.put(cb, Play.SPLIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.SPLIT);
         }
         cardBundle[1] = 7;
-        isPair.put(cardBundle, Play.HIT);
+        hashVal = Arrays.hashCode(cardBundle);
+        isPair.put(hashVal, Play.HIT);
         for (int up = 8; up <= 9; up++) {
             Integer[] cb = {9, up};
-            isPair.put(cb, Play.SPLIT);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.SPLIT);
         }
         cardBundle[1] = 10;
-        isPair.put(cardBundle, Play.HIT);
+        hashVal = Arrays.hashCode(cardBundle);
+        isPair.put(hashVal, Play.HIT);
         
         // case for 10s
         for (int up = 1; up <= 10; up++) {
             Integer[] cb = {10, up};
-            isPair.put(cb, Play.STAY);
+            hashVal = Arrays.hashCode(cb);
+            isPair.put(hashVal, Play.STAY);
         }
     }
     
@@ -231,25 +304,29 @@ public class BasicStrategy {
         Integer notAce;
         Integer dealerCard;
         Integer[] bundleT = new Integer[2];
+        Integer hashVal;
 
         //for A2-A3
         for (notAce = 2; notAce < 4; notAce++) {
             //dealer 2-4
             for (dealerCard = 2; dealerCard < 5; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
-                hasAce.put(bundle, Play.HIT);
+                hashVal = Arrays.hashCode(bundle);
+                hasAce.put(hashVal, Play.HIT);
             }
 
             //dealer 5-6
             for (dealerCard = 5; dealerCard < 7; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
-                hasAce.put(bundle, Play.DOUBLE_DOWN);
+                hashVal = Arrays.hashCode(bundle);
+                hasAce.put(hashVal, Play.DOUBLE_DOWN);
             }
 
             //dealer 7-A(11)
             for (dealerCard = 7; dealerCard < 12; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
-                hasAce.put(bundle, Play.HIT);
+                hashVal = Arrays.hashCode(bundle);
+                hasAce.put(hashVal, Play.HIT);
             }
         }
         
@@ -258,67 +335,78 @@ public class BasicStrategy {
             //dealer hand 2+3
             for(dealerCard =2; dealerCard<4;dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
-                hasAce.put(bundle, Play.HIT);
+                hashVal = Arrays.hashCode(bundle);
+                hasAce.put(hashVal, Play.HIT);
             }
             
             //dealer hand 4-6
             for(dealerCard = 4; dealerCard<7; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
-                hasAce.put(bundle, Play.DOUBLE_DOWN);
+                hashVal = Arrays.hashCode(bundle);
+                hasAce.put(hashVal, Play.DOUBLE_DOWN);
             }
             
             //hand 7-A(11)
             for(dealerCard=7; dealerCard<11; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
-                hasAce.put(bundle, Play.HIT);
+                hashVal = Arrays.hashCode(bundle);
+                hasAce.put(hashVal, Play.HIT);
             }
         }
         
         //A6 dealer 2
         bundleT[0] = 6;
         bundleT[1] = 2;
-        hasAce.put(bundleT, Play.HIT);
+        hashVal = Arrays.hashCode(bundleT);
+        hasAce.put(hashVal, Play.HIT);
         
         //A6 dealer 3-6
         for(dealerCard=3; dealerCard<7;dealerCard++) {
             Integer[] bundle = {6, dealerCard};
-            hasAce.put(bundle, Play.DOUBLE_DOWN);
+            hashVal = Arrays.hashCode(bundle);
+            hasAce.put(hashVal, Play.DOUBLE_DOWN);
         }
         
         //A6 dealer 7-A(11)
         for(dealerCard=7; dealerCard<12; dealerCard++) {
             Integer[] bundle = {6, dealerCard};
-            hasAce.put(bundle, Play.HIT);
+            hashVal = Arrays.hashCode(bundle);
+            hasAce.put(hashVal, Play.HIT);
         }
         
         //A7, dealer2
         bundleT[0] = 7;
         bundleT[1] = 2;
-        hasAce.put(bundleT, Play.STAY);
+        hashVal = Arrays.hashCode(bundleT);
+        hasAce.put(hashVal, Play.STAY);
         
         //A7, dealer3-6
         for(dealerCard=3; dealerCard<7;dealerCard++) {
             Integer[] bundle = {7, dealerCard};
-            hasAce.put(bundle, Play.DOUBLE_DOWN);
+            hashVal = Arrays.hashCode(bundle);
+            hasAce.put(hashVal, Play.DOUBLE_DOWN);
         }
         
         //A7, dealer7-8
         for(dealerCard = 7;dealerCard<9; dealerCard++) {
             Integer[] bundle = {7, dealerCard};
-            hasAce.put(bundle, Play.DOUBLE_DOWN);
+            hashVal = Arrays.hashCode(bundle);
+            hasAce.put(hashVal, Play.DOUBLE_DOWN);
         }
         
         //A7, dealer 9-A(11)
         for (dealerCard=9; dealerCard<12;dealerCard++) {
             Integer[] bundle = {7, dealerCard};
-            hasAce.put(bundle, Play.HIT);
+            hashVal = Arrays.hashCode(bundle);
+            hasAce.put(hashVal, Play.HIT);
         }
             
         //A8-A10
         for (notAce = 8; notAce<11;notAce++) {
             for(dealerCard=2; dealerCard<12; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
-                hasAce.put(bundle, Play.STAY);
+                hashVal = Arrays.hashCode(bundle);
+                hasAce.put(hashVal, Play.STAY);
             }
         }
     }
@@ -349,6 +437,7 @@ public class BasicStrategy {
     public Play getPlay(Hand myHand, Card upCard) {
         //Play advisedPlay;
         Integer[] bundle = new Integer[2];
+        Integer hashValz;
         
         // If there are two cards in the hand
         if (myHand.size() <= 2) {
@@ -357,26 +446,24 @@ public class BasicStrategy {
             if (myHand.isPair()) {
                 bundle[0] = myHand.getCard(0).value();
                 bundle[1] = upCard.value();
-                return Play.SPLIT;
-                //return isPair.get(bundle);
+                hashValz = Arrays.hashCode(bundle);
+                return isPair.get(hashValz);
             
             // Check whether the player's hand has an Ace
             } else if (hasAce(myHand) != -1) {
                 bundle[0] = myHand.getCard(hasAce(myHand)).value();
                 bundle[1] = upCard.value();
-                return Play.DOUBLE_DOWN;
-                //return hasAce.get(bundle);
+                //return Play.DOUBLE_DOWN;
+                hashValz = Arrays.hashCode(bundle);
+                return hasAce.get(hashValz);
             
             // Otherwise, use the sum of the cards
             } else {
                 bundle[0] = myHand.getValue();
                 bundle[1] = upCard.value();
-                Integer[] hard = {17, 10};
-                if (justSum.containsKey(hard)) {
-                    return Play.STAY;
-                } else {
-                    return Play.SPLIT;
-                }
+                //Integer[] hard = {17, 10};
+                hashValz = Arrays.hashCode(bundle);
+                return justSum.get(hashValz);
                 //return justSum.get(bundle);
             }
             
@@ -384,8 +471,8 @@ public class BasicStrategy {
         } else {
             bundle[0] = (Integer)myHand.getValue();
             bundle[1] = (Integer)upCard.value();
-            return Play.HIT;
-            //return justSum.get(bundle);   
+            hashValz = Arrays.hashCode(bundle);
+            return justSum.get(hashValz);   
         }
     }
 }
