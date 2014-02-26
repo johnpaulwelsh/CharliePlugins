@@ -47,13 +47,13 @@ public class Test01_A2_7 {
         Hid hid = new Hid(Seat.YOU, 1.0, 1.5);
         Hand hand = new Hand(hid);
         
-        // Hand comp = Ace, 4
+        // Hand comp = Ace, 10
         hand.hit(new Card(1, Card.Suit.HEARTS));
-        hand.hit(new Card(4, Card.Suit.HEARTS));
+        hand.hit(new Card(10, Card.Suit.HEARTS));
         
-        // Up card = 10
-        Play result = advisor.advise(hand, new Card(10, Card.Suit.HEARTS));
-        Play expectedPlay = Play.HIT;
+        // Up card = Ace
+        Play result = advisor.advise(hand, new Card(1, Card.Suit.SPADES));
+        Play expectedPlay = Play.STAY;
         
         assertEquals(expectedPlay, result);
     }

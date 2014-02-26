@@ -7,6 +7,7 @@ import charlie.util.Play;
 import java.util.Arrays;
 
 /**
+ * Implementation of the Blackjack Basic Strategy
  * @author Katie Craven and John Paul Welsh
  * ATTENTION: ACE IS REPRESENTED WITH A 1 IN ALL OF THIS CODE
  */
@@ -303,7 +304,7 @@ public class BasicStrategy {
         This is acting on the assumption that the comparisons
         to ACE will be with the card that is not an ace, and 
         instead we have an array of [notAceCard, dealerCard].
-        Doesn't include AA.
+        Doesn't include A,A.
         */
         
         Integer notAce;
@@ -313,8 +314,8 @@ public class BasicStrategy {
 
         //for A2-A3
         for (notAce = 2; notAce < 4; notAce++) {
-            //dealer 2-4
-            for (dealerCard = 2; dealerCard < 5; dealerCard++) {
+            //dealer Ace-4
+            for (dealerCard = 1; dealerCard < 5; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hashVal = Arrays.hashCode(bundle);
                 hasAce.put(hashVal, Play.HIT);
@@ -327,8 +328,8 @@ public class BasicStrategy {
                 hasAce.put(hashVal, Play.DOUBLE_DOWN);
             }
 
-            //dealer 7-A(11)
-            for (dealerCard = 7; dealerCard < 12; dealerCard++) {
+            //dealer 7-10
+            for (dealerCard = 7; dealerCard < 11; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hashVal = Arrays.hashCode(bundle);
                 hasAce.put(hashVal, Play.HIT);
@@ -337,8 +338,8 @@ public class BasicStrategy {
         
         //for A4-A5
         for (notAce=4; notAce<6; notAce++) {
-            //dealer hand 2+3
-            for(dealerCard =2; dealerCard<4;dealerCard++) {
+            //dealer hand Ace-3
+            for(dealerCard =1; dealerCard<4;dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hashVal = Arrays.hashCode(bundle);
                 hasAce.put(hashVal, Play.HIT);
@@ -351,7 +352,7 @@ public class BasicStrategy {
                 hasAce.put(hashVal, Play.DOUBLE_DOWN);
             }
             
-            //hand 7-A(11)
+            //hand 7-10
             for(dealerCard=7; dealerCard<11; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hashVal = Arrays.hashCode(bundle);
@@ -359,56 +360,60 @@ public class BasicStrategy {
             }
         }
         
+        //A6 dealer Ace
+        bundleT[0] = 6;
+        bundleT[1] = 1;
+        hashVal = Arrays.hashCode(bundleT);
+        hasAce.put(hashVal, Play.HIT);
         //A6 dealer 2
         bundleT[0] = 6;
         bundleT[1] = 2;
         hashVal = Arrays.hashCode(bundleT);
         hasAce.put(hashVal, Play.HIT);
-        
         //A6 dealer 3-6
         for(dealerCard=3; dealerCard<7;dealerCard++) {
             Integer[] bundle = {6, dealerCard};
             hashVal = Arrays.hashCode(bundle);
             hasAce.put(hashVal, Play.DOUBLE_DOWN);
         }
-        
-        //A6 dealer 7-A(11)
-        for(dealerCard=7; dealerCard<12; dealerCard++) {
+        //A6 dealer 7-10
+        for(dealerCard=7; dealerCard<11; dealerCard++) {
             Integer[] bundle = {6, dealerCard};
             hashVal = Arrays.hashCode(bundle);
             hasAce.put(hashVal, Play.HIT);
         }
         
+        //A7, dealerAce
+        bundleT[0] = 7;
+        bundleT[1] = 1;
+        hashVal = Arrays.hashCode(bundleT);
+        hasAce.put(hashVal, Play.HIT);
         //A7, dealer2
         bundleT[0] = 7;
         bundleT[1] = 2;
         hashVal = Arrays.hashCode(bundleT);
         hasAce.put(hashVal, Play.STAY);
-        
         //A7, dealer3-6
         for(dealerCard=3; dealerCard<7;dealerCard++) {
             Integer[] bundle = {7, dealerCard};
             hashVal = Arrays.hashCode(bundle);
             hasAce.put(hashVal, Play.DOUBLE_DOWN);
         }
-        
         //A7, dealer7-8
         for(dealerCard = 7;dealerCard<9; dealerCard++) {
             Integer[] bundle = {7, dealerCard};
             hashVal = Arrays.hashCode(bundle);
             hasAce.put(hashVal, Play.DOUBLE_DOWN);
         }
-        
-        //A7, dealer 9-A(11)
-        for (dealerCard=9; dealerCard<12;dealerCard++) {
+        //A7, dealer 9-10
+        for (dealerCard=9; dealerCard<11;dealerCard++) {
             Integer[] bundle = {7, dealerCard};
             hashVal = Arrays.hashCode(bundle);
             hasAce.put(hashVal, Play.HIT);
         }
-            
         //A8-A10
         for (notAce = 8; notAce<11;notAce++) {
-            for(dealerCard=2; dealerCard<12; dealerCard++) {
+            for(dealerCard=1; dealerCard<11; dealerCard++) {
                 Integer[] bundle = {notAce, dealerCard};
                 hashVal = Arrays.hashCode(bundle);
                 hasAce.put(hashVal, Play.STAY);
