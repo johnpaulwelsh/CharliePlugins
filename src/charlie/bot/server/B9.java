@@ -134,7 +134,6 @@ public class B9 implements IBot {
         // In this case, we'll create the hand "on the fly", as it were.
         if(hand == null) {
             hand = new Hand(hid);
-            
             hands.put(hid, hand);
         }
         
@@ -147,25 +146,24 @@ public class B9 implements IBot {
         if(hid.getSeat() != mine || hand.isBroke() || !myTurn) {
             myTurn = false;
             LOG.info("IT KNOWS ITS NOT ITS TURN");
-            return;     
-        }else{
-        LOG.info("IT IS ITS TURN");
-        // It's my turn, a card has come my way, and I have to respond
-        respond();  }      
+            return;
+        } else {
+            LOG.info("IT IS ITS TURN");
+            // It's my turn, a card has come my way, and I have to respond
+            respond();
+        }      
     }
     
     /**
      * Responds when it is my turn.
      */
     protected void respond() {
-            if (myTurn == true){
+        if (myTurn == true){
             new Thread(new Responder(this, myHand, dealer, hands.get(dealerHid))).start(); 
-            LOG.info("START THREAD");}
-            else{
-                LOG.info("IT SHOULDNT BE IMPLEMENTING!");
-            }
-            
-            
+            LOG.info("START THREAD");
+        } else {
+            LOG.info("IT SHOULDNT BE IMPLEMENTING!");
+        }
     }
     
     /**
@@ -245,8 +243,7 @@ public class B9 implements IBot {
         }else{
         
         // Othewise respond
-        LOG.info("turn hid = "+hid); 
-
+        LOG.info("turn hid = "+hid);
         myTurn = true;
         
         // It's my turn and I have to respond
