@@ -146,19 +146,26 @@ public class B9 implements IBot {
         // my turn!
         if(hid.getSeat() != mine || hand.isBroke() || !myTurn) {
             myTurn = false;
-            
+            LOG.info("IT KNOWS ITS NOT ITS TURN");
             return;     
-        }
-        
+        }else{
+        LOG.info("IT IS ITS TURN");
         // It's my turn, a card has come my way, and I have to respond
-        respond();        
+        respond();  }      
     }
     
     /**
      * Responds when it is my turn.
      */
     protected void respond() {
-        new Thread(new Responder(this, myHand, dealer, hands.get(dealerHid))).start();        
+            if (myTurn == true){
+            new Thread(new Responder(this, myHand, dealer, hands.get(dealerHid))).start(); 
+            LOG.info("START THREAD");}
+            else{
+                LOG.info("IT SHOULDNT BE IMPLEMENTING!");
+            }
+            
+            
     }
     
     /**
@@ -231,8 +238,11 @@ public class B9 implements IBot {
     @Override
     public void play(Hid hid) {
         // If it is not my turn, there's nothing to do
-        if(hid.getSeat() != mine)
+        if(hid.getSeat() != mine){
+            myTurn = false;
+            LOG.info("STILL not its turn");
             return;
+        }else{
         
         // Othewise respond
         LOG.info("turn hid = "+hid); 
@@ -241,5 +251,6 @@ public class B9 implements IBot {
         
         // It's my turn and I have to respond
         respond();
+        }
     }
 }
