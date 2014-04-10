@@ -126,6 +126,7 @@ public class B9 implements IBot {
         
         if(hid.getSeat() == Seat.DEALER) {
             dealerUpCard = card;
+            LOG.info("DEALER UP CARD = " + dealerUpCard.getName());
         }
         
         // Retrieve the hand
@@ -160,6 +161,12 @@ public class B9 implements IBot {
      * Responds when it is my turn.
      */
     protected void respond() {
+        // Sometimes this thread gets called when dealerUpCard has not been
+        // instantiated yet (it could also be that dealerUpCard is the Hole
+        // Card, which we cannot read anyway. So we check to make sure we
+        // only start the thread when the dealerUpCard actually has a value.
+        if (dealerUpCard == null)
+            return;
         new Thread(new Responder(this, myHand, dealer, dealerUpCard)).start();
     }
     
