@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class implements the IBot with the aid of a worker thread.
- * @author Ron Coleman
+ * @author Ron Coleman, Katie Craven, and John Paul Welsh
  */
 public class B9 implements IBot {
     private final Logger LOG = LoggerFactory.getLogger(B9.class);
@@ -49,6 +49,7 @@ public class B9 implements IBot {
     private Hand myHand;
     protected boolean myTurn = false;
     protected int shoeSize;
+    protected Card dealerUpCard;
     
     /**
      * Constructor
@@ -82,9 +83,7 @@ public class B9 implements IBot {
     @Override
     public void sit(Seat seat) {
         this.mine = seat;
-        
         this.hid = new Hid(seat,Constant.BOT_MIN_BET,0);
-        
         this.myHand = new Hand(this.hid);
     }
 
@@ -97,7 +96,6 @@ public class B9 implements IBot {
     public void startGame(List<Hid> hids, int shoeSize) {
         for(Hid hid_: hids) {
             hands.put(hid_,new Hand(hid_));
-            
             if(hid_.getSeat() == Seat.DEALER)
                 this.dealerHid = hid_;
         }       
@@ -126,6 +124,10 @@ public class B9 implements IBot {
         if(card == null)
             return;
         
+        if(hid.getSeat() == Seat.DEALER) {
+            dealerUpCard = card;
+        }
+        
         // Retrieve the hand
         Hand hand = hands.get(hid);
         
@@ -140,30 +142,25 @@ public class B9 implements IBot {
         // Hit the hand
         hand.hit(card);
 
+        if(hid.getSeat() == mine && myHand.size() >= 2)
+            myTurn = true;
+        
         // It's not my turn if card not mine, my hand broke, or
         // this is the first round of cards in which case it's not
         // my turn!
         if(hid.getSeat() != mine || hand.isBroke() || !myTurn) {
             myTurn = false;
-            LOG.info("IT KNOWS ITS NOT ITS TURN");
-            return;
         } else {
-            LOG.info("IT IS ITS TURN");
             // It's my turn, a card has come my way, and I have to respond
-            respond();
-        }      
+            play(hid);
+        }
     }
     
     /**
      * Responds when it is my turn.
      */
     protected void respond() {
-        if (myTurn == true){
-            new Thread(new Responder(this, myHand, dealer, hands.get(dealerHid))).start(); 
-            LOG.info("START THREAD");
-        } else {
-            LOG.info("IT SHOULDNT BE IMPLEMENTING!");
-        }
+        new Thread(new Responder(this, myHand, dealer, dealerUpCard)).start();
     }
     
     /**
@@ -236,18 +233,15 @@ public class B9 implements IBot {
     @Override
     public void play(Hid hid) {
         // If it is not my turn, there's nothing to do
-        if(hid.getSeat() != mine){
-            myTurn = false;
-            LOG.info("STILL not its turn");
+        if(hid.getSeat() != mine)
             return;
-        }else{
         
         // Othewise respond
-        LOG.info("turn hid = "+hid);
-        myTurn = true;
+        LOG.info("turn hid = "+hid); 
         
         // It's my turn and I have to respond
         respond();
-        }
+        // Now my turn is over
+        myTurn = false;
     }
 }
