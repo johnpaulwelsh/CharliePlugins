@@ -30,8 +30,8 @@ public class Responder implements Runnable {
     @Override
     public void run() {
         try {
-            // Delay = a random number between 1000 and 4000
-            int delay = 1000 + (int)(Math.random() * ((4000 - 1000) + 1));
+            // Delay = a random number between 1000 and 3000
+            int delay = 1000 + (int)(Math.random() * ((3000 - 1000) + 1));
             Thread.sleep(delay);
         } catch (InterruptedException ex) {
           LOG.info("Thread Error: " + ex);
