@@ -158,4 +158,3 @@ public class SideBetView implements ISideBetView {
         g.drawString(""+amt, X-5, Y+5);
     }
 }
-
