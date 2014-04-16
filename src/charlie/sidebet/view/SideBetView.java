@@ -37,8 +37,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class implements the side bet view
- * @author Ron Coleman, Ph.D.
+ * This class implements the side bet view.
+ * 
+ * @author Ron Coleman, Ph.D., Katie Craven, and John Paul Welsh
  */
 public class SideBetView implements ISideBetView {
     private final Logger LOG = LoggerFactory.getLogger(SideBetView.class);
@@ -90,12 +91,18 @@ public class SideBetView implements ISideBetView {
             if(button.isPressed(x, y)) {
                 amt += button.getAmt();
                 LOG.info("A. side bet amount "+button.getAmt()+" updated new amt = "+amt);
+                // PLAY SOUND
+                // SoundFactory sf = new SoundFactory();
             } 
         }
         
-        if(oldAmt == amt) {
-            amt = 0;
-            LOG.info("B. side bet amount cleared");
+        // Test if the sidebet value area (red dashed circle) has been pressed.
+        if (x > (X-DIAMETER/2) && x < (X+DIAMETER/2) &&
+            y > (Y-DIAMETER/2) && y < (Y+DIAMETER/2)) {
+            if(oldAmt == amt) {
+                amt = 0;
+                LOG.info("B. side bet amount cleared");
+            }
         }
     }
 
@@ -156,5 +163,16 @@ public class SideBetView implements ISideBetView {
         g.setFont(font);
         g.setColor(Color.WHITE);
         g.drawString(""+amt, X-5, Y+5);
+        
+        // Draw the sidebet instructions and payouts
+        g.setFont(new Font("ARIAL", Font.BOLD, 14));
+        g.setColor(Color.BLACK);
+        g.drawString("SUPER 7 pays 3:1", X+50, Y-18);
+        g.drawString("ROYAL MATCH pays 25:1", X+50, Y);
+        g.drawString("EXACTLY 13 pays 1:1", X+50, Y+18);
+        
+        // Draw the chips for the sidebet
+        
+        // Draw WIN or LOSE over the sidebet chips
     }
 }

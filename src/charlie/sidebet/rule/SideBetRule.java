@@ -30,7 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class implements the side bet rule for Super 7.
+ * This class implements the side bet rule for Super 7,
+ * Exactly 13, and Royal Match.
+ * 
  * @author Ron Coleman and Katie Craven
  */
 public class SideBetRule implements ISideBetRule {
