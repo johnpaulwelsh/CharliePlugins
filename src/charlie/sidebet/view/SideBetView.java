@@ -79,16 +79,16 @@ public class SideBetView implements ISideBetView {
     
     /**
      * Registers a click for the side bet.
-     * @param x X coordinate
-     * @param y Y coordinate
+     * @param touchx X coordinate
+     * @param touchy Y coordinate
      */
     @Override
-    public void click(int x, int y) {
+    public void click(int touchx, int touchy) {
         int oldAmt = amt;
         
         // Test if any chip button has been pressed.
         for(ChipButton button: buttons) {
-            if(button.isPressed(x, y)) {
+            if(button.isPressed(touchx, touchy)) {
                 amt += button.getAmt();
                 LOG.info("A. side bet amount "+button.getAmt()+" updated new amt = "+amt);
                 // PLAY SOUND
@@ -97,8 +97,8 @@ public class SideBetView implements ISideBetView {
         }
         
         // Test if the sidebet value area (red dashed circle) has been pressed.
-        if (x > (X-DIAMETER/2) && x < (X+DIAMETER/2) &&
-            y > (Y-DIAMETER/2) && y < (Y+DIAMETER/2)) {
+        if (touchx > (X-DIAMETER/2) && touchx < (X+DIAMETER/2) &&
+            touchy > (Y-DIAMETER/2) && touchy < (Y+DIAMETER/2)) {
             if(oldAmt == amt) {
                 amt = 0;
                 LOG.info("B. side bet amount cleared");
