@@ -28,6 +28,14 @@ import charlie.plugin.ISideBetView;
 import charlie.view.AMoneyManager;
 
 import charlie.view.sprite.ChipButton;
+import charlie.audio.SoundFactory;
+import charlie.audio.Effect;
+import charlie.util.Cashier;
+import charlie.view.sprite.Chip;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.List;
+import java.awt.Image;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -47,6 +55,12 @@ public class SideBetView implements ISideBetView {
     public final static int X = 400;
     public final static int Y = 200;
     public final static int DIAMETER = 50;
+    protected List<Chip> chipz = new ArrayList<>();
+    Image buttonIM;
+    protected Random ran = new Random();
+    protected Random ranT = new Random();
+    List<Image> buttonImage = new ArrayList<>();
+    List<Integer> yRand = new ArrayList<>();
     
     protected Font font = new Font("Arial", Font.BOLD, 18);
     protected BasicStroke stroke = new BasicStroke(3);
@@ -92,7 +106,14 @@ public class SideBetView implements ISideBetView {
                 amt += button.getAmt();
                 LOG.info("A. side bet amount "+button.getAmt()+" updated new amt = "+amt);
                 // PLAY SOUND
-                // SoundFactory sf = new SoundFactory();
+        
+                buttonIM = button.getImage();
+   
+                buttonImage.add(buttonIM);
+                int yr = ranT.nextInt((3- -3) + 1) + -3;
+                yRand.add(yr);
+                      
+                SoundFactory.play(Effect.CHIPS_IN);
             } 
         }
         
@@ -101,6 +122,8 @@ public class SideBetView implements ISideBetView {
             touchy > (Y-DIAMETER/2) && touchy < (Y+DIAMETER/2)) {
             if(oldAmt == amt) {
                 amt = 0;
+                SoundFactory.play(Effect.CHIPS_OUT);
+                buttonImage.clear();
                 LOG.info("B. side bet amount cleared");
             }
         }
@@ -154,6 +177,15 @@ public class SideBetView implements ISideBetView {
      */
     @Override
     public void render(Graphics2D g) {
+        
+        // Draw the sidebet instructions and payouts
+        g.setFont(new Font("ARIAL", Font.BOLD, 14));
+        g.setColor(Color.BLACK);
+        g.drawString("SUPER 7 pays 3:1", X+50, Y-28);
+        g.drawString("ROYAL MATCH pays 25:1", X+50, Y-10);
+        g.drawString("EXACTLY 13 pays 1:1", X+50, Y+8);
+        
+        // Draw the chips for the sidebet
         // Draw the at-stake place on the table
         g.setColor(Color.RED); 
         g.setStroke(dashed);
@@ -162,17 +194,27 @@ public class SideBetView implements ISideBetView {
         // Draw the at-stake amount
         g.setFont(font);
         g.setColor(Color.WHITE);
-        g.drawString(""+amt, X-5, Y+5);
         
-        // Draw the sidebet instructions and payouts
-        g.setFont(new Font("ARIAL", Font.BOLD, 14));
-        g.setColor(Color.BLACK);
-        g.drawString("SUPER 7 pays 3:1", X+50, Y-18);
-        g.drawString("ROYAL MATCH pays 25:1", X+50, Y);
-        g.drawString("EXACTLY 13 pays 1:1", X+50, Y+18);
+        if (amt<10){
+            g.drawString(""+amt, X-5, Y+5);
+        }else if(amt<100)
+        {
+            g.drawString(""+amt, X-10, Y+5);
+        }else if (amt<1000){
+            g.drawString(""+amt, X-15, Y+5);
+        }else
+        {
+            g.drawString(""+amt, X-20, Y+5);
+        }
         
-        // Draw the chips for the sidebet
-        
+        int XX = 450;
+        int YY = 200;
+        for(int i=0; i<buttonImage.size(); i++)
+        {
+            g.drawImage(buttonImage.get(i), XX, YY, null);
+            XX = XX+10;
+            YY = 200+ yRand.get(i);
+        }
         // Draw WIN or LOSE over the sidebet chips
     }
 }
