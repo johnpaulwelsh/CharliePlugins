@@ -62,6 +62,12 @@ public class SideBetView implements ISideBetView {
     List<Image> buttonImage = new ArrayList<>();
     List<Integer> yRand = new ArrayList<>();
     
+    //some colors for win and lose
+    protected Color loseColorBg = new Color(250,58,5);
+    protected Color loseColorFg = Color.WHITE;
+    protected Color winColorFg = Color.BLACK;
+    protected Color winColorBg = new Color(116,255,4);
+    
     protected Font font = new Font("Arial", Font.BOLD, 18);
     protected BasicStroke stroke = new BasicStroke(3);
     
@@ -76,6 +82,7 @@ public class SideBetView implements ISideBetView {
     protected List<ChipButton> buttons;
     protected int amt = 0;
     protected AMoneyManager moneyManager;
+    protected int checker = 0;
 
     public SideBetView() {
         LOG.info("side bet view constructed");
@@ -136,11 +143,17 @@ public class SideBetView implements ISideBetView {
     @Override
     public void ending(Hid hid) {
         double bet = hid.getSideAmt();
-        
+        checker = 0;
         if(bet == 0)
             return;
 
         LOG.info("side bet outcome = "+bet);
+        
+        if(bet>1){
+            checker = 1;
+        }else{
+            checker = -1;
+        }
         
         // Update the bankroll
         moneyManager.increase(bet);
@@ -153,6 +166,7 @@ public class SideBetView implements ISideBetView {
      */
     @Override
     public void starting() {
+        checker = 0;
     }
 
     /**
@@ -209,12 +223,25 @@ public class SideBetView implements ISideBetView {
         
         int XX = 450;
         int YY = 200;
-        for(int i=0; i<buttonImage.size(); i++)
-        {
+        for(int i=0; i<buttonImage.size(); i++) {
             g.drawImage(buttonImage.get(i), XX, YY, null);
             XX = XX+10;
             YY = 200+ yRand.get(i);
         }
+        
         // Draw WIN or LOSE over the sidebet chips
+        if (checker ==1) {
+            g.setColor(winColorBg);    
+            g.fillRoundRect(X+50, Y+50, 60, 30, 5, 5);
+            g.setColor(winColorFg);
+            g.drawString("Win", X+63, Y+70);
+            
+        } else if (checker == -1) {
+            g.setColor(loseColorBg);    
+            g.fillRoundRect(X+50, Y+50, 60, 30, 5, 5);
+            g.setColor(loseColorFg);
+            g.drawString("Lose", X+59, Y+70);
+        }
+
     }
 }
