@@ -90,11 +90,11 @@ public class SidebetTestShoe extends charlie.card.Shoe {
         
         cards.add(new Card(Card.KING,Card.Suit.DIAMONDS));
         
-        // Test case #10 - 6 K 7 6 K
+        // Test case #10 - 6 K 8 6 K
         cards.add(new Card(6,Card.Suit.CLUBS));
         cards.add(new Card(Card.KING,Card.Suit.CLUBS));
         
-        cards.add(new Card(7,Card.Suit.CLUBS));
+        cards.add(new Card(8,Card.Suit.CLUBS));
         cards.add(new Card(6,Card.Suit.DIAMONDS));
         
         cards.add(new Card(Card.KING,Card.Suit.DIAMONDS));
