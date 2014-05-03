@@ -221,7 +221,7 @@ public class B9 implements IBot {
     /**
      * Handles push.
      * @param hid Hand id
-     */ 
+     */
     @Override
     public void push(Hid hid) {
     }

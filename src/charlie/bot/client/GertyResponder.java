@@ -1,0 +1,82 @@
+package charlie.bot.client;
+
+import charlie.advisor.Advisor;
+import charlie.card.Card;
+import charlie.card.Hand;
+import charlie.dealer.Dealer;
+import charlie.plugin.IGerty;
+import charlie.util.Play;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Thread to handle a response from the IGerty.
+ * @author Katie Craven and John Paul Welsh
+ */
+public class GertyResponder implements Runnable {
+    private final IGerty gerty;
+    private final Hand myHand;
+    private final Dealer dealer;
+    private final Card dealerUpCard;
+    private final Logger LOG = LoggerFactory.getLogger(GertyResponder.class);
+    
+    public GertyResponder(IGerty gerty, Hand myHand, Dealer dealer, Card dealerUpCard) {
+        this.gerty = gerty;
+        this.myHand = myHand;
+        this.dealer = dealer;
+        this.dealerUpCard = dealerUpCard;
+    }
+    
+    @Override
+    public void run() {
+        try {
+            // Delay = a random number between 1000 and 3000
+            int delay = 1000 + (int)(Math.random() * ((3000 - 1000) + 1));
+            Thread.sleep(delay);
+        } catch (InterruptedException ex) {
+          LOG.info("Thread Error: " + ex);
+        }
+
+        Advisor adv = new Advisor();
+        
+        Play aPlay = adv.advise(myHand, dealerUpCard);
+        switch(aPlay) {
+            case HIT:
+                dealer.hit(gerty, myHand.getHid());
+                break;
+            case DOUBLE_DOWN:
+                // We cannot double down with more than 2 cards,
+                // so if the BS tells us to DD, we will hit instead
+                // since it's essentially the same action.
+                if (myHand.size() > 2) {
+                    dealer.hit(gerty, myHand.getHid());
+                } else {
+                    dealer.doubleDown(gerty, myHand.getHid());
+                }
+                break;
+            case STAY:
+                dealer.stay(gerty, myHand.getHid());
+                break;
+            case SPLIT:
+                if (myHand.getValue() >= 17) {
+                    dealer.stay(gerty, myHand.getHid());
+                } else if (myHand.getValue() <= 10) {
+                    dealer.hit(gerty, myHand.getHid());
+                } else if (myHand.getValue() == 11) {
+                    dealer.doubleDown(gerty, myHand.getHid());
+                } else {
+                    // instead of approximating with the assumption
+                    // that the dealer's hole card is 10, we make
+                    // the bot hit here as a way to make it less than
+                    // a perfect player. So if given SPLIT, it will hit
+                    // on any value for its own hand that is between
+                    // 12 and 16.
+                    dealer.hit(gerty, myHand.getHid());
+                }
+                break;
+            default:
+                LOG.info("????");
+                break;
+        }        
+    }
+}
