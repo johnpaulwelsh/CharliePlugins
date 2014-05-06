@@ -456,30 +456,30 @@ public class BasicStrategy {
             
             // Check if the cards are a pair (includes A,A)
             if (myHand.isPair()) {
-                bundle[0] = (Integer)myHand.getCard(0).value();
-                bundle[1] = (Integer)upCard.value();
+                bundle[0] = myHand.getCard(0).value();
+                bundle[1] = upCard.value();
                 hashValz = Arrays.hashCode(bundle);
                 return isPair.get(hashValz);
             
             // Check whether the player's hand has an Ace
             } else if (hasAce(myHand) != -1) {
-                bundle[0] = (Integer)myHand.getCard(hasAce(myHand)).value();
-                bundle[1] = (Integer)upCard.value();
+                bundle[0] = myHand.getCard(hasAce(myHand)).value();
+                bundle[1] = upCard.value();
                 hashValz = Arrays.hashCode(bundle);
                 return hasAce.get(hashValz);
             
             // Otherwise, use the sum of the cards
             } else {
-                bundle[0] = (Integer)myHand.getValue();
-                bundle[1] = (Integer)upCard.value();
+                bundle[0] = myHand.getValue();
+                bundle[1] = upCard.value();
                 hashValz = Arrays.hashCode(bundle);
                 return justSum.get(hashValz);
             }
             
         // Otherwise, use the sum of the cards
         } else {
-            bundle[0] = (Integer)myHand.getValue();
-            bundle[1] = (Integer)upCard.value();
+            bundle[0] = myHand.getValue();
+            bundle[1] = upCard.value();
             hashValz = Arrays.hashCode(bundle);
             return justSum.get(hashValz);   
         }

@@ -29,8 +29,11 @@ public class Gerty implements IGerty {
     protected HashMap<Hid,Hand> hands = new HashMap<>();
     protected Hid dealerHid;
     private Hand myHand;
+    private Hand dealerHand;
     protected boolean myTurn = false;
     protected Card dealerUpCard;
+    
+    protected static boolean STAYED = false;
     
     protected int shoeSize;
     protected int gamesPlayed;
@@ -120,6 +123,8 @@ public class Gerty implements IGerty {
      */
     @Override
     public void endGame(int shoeSize) {
+        myTurn = false;
+        STAYED = false;
         LOG.info("received endGame shoeSize = "+shoeSize);
         gamesPlayed++;
     }
@@ -144,6 +149,10 @@ public class Gerty implements IGerty {
         // Retrieve the hand
         Hand hand = hands.get(hid);
         
+        if (hid.getSeat() == Seat.DEALER) {
+            dealerHand = hand;
+        }
+        
         // If the hand does not exist...this could happen if
         // player splits a hand which we don't yet know about.
         // In this case, we'll create the hand "on the fly", as it were.
@@ -155,6 +164,9 @@ public class Gerty implements IGerty {
         // Hit the hand
         hand.hit(card);
         
+        if (STAYED)
+            return;
+        
         // If the card being dealt is mine, and this is during the initial deal,
         // add the card to my hand
         if(hid.getSeat() == mine && myHand.size() < 2)
@@ -165,11 +177,12 @@ public class Gerty implements IGerty {
         if(hid.getSeat() == mine && myHand.size() >= 2)
             myTurn = true;
         
-        
-        // do a check here for if the dealer already won
-        if (hand.isBlackjack() || hand.isCharlie() || hand.isBroke())
+        if (dealerHand.size() >= 2 && (dealerHand.isBlackjack()
+                || dealerHand.isBroke() || dealerHand.isCharlie()))
             myTurn = false;
         
+        if (hand.isBlackjack() || hand.isCharlie() || hand.isBroke())
+            myTurn = false;
         
         // It's not my turn if card not mine, my hand broke, or
         // this is the first round of cards in which case it's not
@@ -249,7 +262,7 @@ public class Gerty implements IGerty {
             return;
         }
         // Othewise respond
-        LOG.info("turn hid = "+hid); 
+        LOG.info("turn hid = "+hid);
         
         // It's my turn and I have to respond
         respond();

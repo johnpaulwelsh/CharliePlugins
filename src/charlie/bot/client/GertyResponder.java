@@ -41,6 +41,7 @@ public class GertyResponder implements Runnable {
         Advisor adv = new Advisor();
         
         Play aPlay = adv.advise(myHand, dealerUpCard);
+        
         switch(aPlay) {
             case HIT:
                 courier.hit(myHand.getHid());
@@ -53,18 +54,25 @@ public class GertyResponder implements Runnable {
                     courier.hit(myHand.getHid());
                 } else {
                     courier.dubble(myHand.getHid());
+                    Gerty.STAYED = true;
                 }
                 break;
             case STAY:
                 courier.stay(myHand.getHid());
+                Gerty.STAYED = true;
                 break;
             case SPLIT:
                 if (myHand.getValue() >= 17) {
                     courier.stay(myHand.getHid());
+                    Gerty.STAYED = true;
+                    
                 } else if (myHand.getValue() <= 10) {
                     courier.hit(myHand.getHid());
+                    
                 } else if (myHand.getValue() == 11) {
                     courier.dubble(myHand.getHid());
+                    Gerty.STAYED = true;
+                    
                 } else {
                     // instead of approximating with the assumption
                     // that the dealer's hole card is 10, we make
