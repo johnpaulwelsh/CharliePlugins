@@ -4,10 +4,11 @@ import charlie.actor.Courier;
 import charlie.card.Card;
 import charlie.card.Hand;
 import charlie.card.Hid;
-import charlie.dealer.Dealer;
 import charlie.dealer.Seat;
 import charlie.plugin.IGerty;
 import charlie.view.AMoneyManager;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,6 @@ public class Gerty implements IGerty {
     protected Courier courier;
     protected AMoneyManager moneyManager;
     protected Hid hid;
-    protected Dealer dealer;
     protected Seat mine;
     protected HashMap<Hid,Hand> hands = new HashMap<>();
     protected Hid dealerHid;
@@ -57,7 +57,9 @@ public class Gerty implements IGerty {
         //     to reduce bet, clear it first and then upBet some more
         
         // send bet amount to Courier, which gives back an Hid
+        this.mine = Seat.YOU;
         this.hid = courier.bet(currBet, 0);
+        this.myHand = new Hand(this.hid);
     }
 
     @Override
@@ -76,16 +78,24 @@ public class Gerty implements IGerty {
 
     @Override
     public void render(Graphics2D g) {
-        // draw the following things:
+        g.setFont(new Font("ARIAL", Font.BOLD, 14));
+        g.setColor(Color.BLACK);
+        int xx = 10;
         
-        // Counting system
-        // Shoe size
-        // Running count
-        // True count
-        // Games played + minutes played
-        // Maximum bet amount
-        // Mean bet amount per game
-        // BJs / Charlies / Wins / Breaks / Loses / Pushes (should add to equal games played)
+        g.drawString("Hi-Low", xx, 40);
+        g.drawString("Shoe Size: "+ shoeSize, xx, 60);
+        g.drawString("Running Count: "+ runningCount, xx, 80);
+        g.drawString("True Count: "+ runningCount, xx, 100);
+        g.drawString("Games Played: " + gamesPlayed, xx, 120);
+        g.drawString("Minutes Played: ???", xx, 140);
+        g.drawString("Maximum bet amount: " +maxBetAmt, xx, 160);
+        g.drawString("Mean bet amount: ???", xx, 180);
+        g.drawString("Blackjacks: "+numBjs, xx,200);
+        g.drawString("Charles: "+ numCharlies, xx, 220);
+        g.drawString("Wins: "+ numWins, xx, 240);
+        g.drawString("Breaks: "+ numBreaks, xx, 260);
+        g.drawString("Loses: "+ numLoses, xx, 280);
+        g.drawString("Pushes: "+ numPushes, xx, 300);
     }
 
     /**
@@ -97,8 +107,9 @@ public class Gerty implements IGerty {
     public void startGame(List<Hid> hids, int shoeSize) {
         for(Hid hid_: hids) {
             hands.put(hid_,new Hand(hid_));
-            if(hid_.getSeat() == Seat.DEALER)
+            if(hid_.getSeat() == Seat.DEALER) {
                 this.dealerHid = hid_;
+            }
         }
         this.shoeSize = shoeSize;
     }
@@ -128,7 +139,6 @@ public class Gerty implements IGerty {
         
         if(hid.getSeat() == Seat.DEALER) {
             dealerUpCard = card;
-            LOG.info("DEALER UP CARD = " + dealerUpCard.getName());
         }
         
         // Retrieve the hand
@@ -144,9 +154,22 @@ public class Gerty implements IGerty {
         
         // Hit the hand
         hand.hit(card);
-
+        
+        // If the card being dealt is mine, and this is during the initial deal,
+        // add the card to my hand
+        if(hid.getSeat() == mine && myHand.size() < 2)
+            myHand.hit(card);
+        
+        // If the card being dealt is mine, and the initial deal is done, then
+        // it's my turn
         if(hid.getSeat() == mine && myHand.size() >= 2)
             myTurn = true;
+        
+        
+        // do a check here for if the dealer already won
+        if (hand.isBlackjack() || hand.isCharlie() || hand.isBroke())
+            myTurn = false;
+        
         
         // It's not my turn if card not mine, my hand broke, or
         // this is the first round of cards in which case it's not
@@ -169,7 +192,7 @@ public class Gerty implements IGerty {
         // only start the thread when the dealerUpCard actually has a value.
         if (dealerUpCard == null)
             return;
-        new Thread(new GertyResponder(this, myHand, dealer, dealerUpCard)).start();
+        new Thread(new GertyResponder(this, myHand, courier, dealerUpCard)).start();
     }
 
     /**
@@ -222,9 +245,9 @@ public class Gerty implements IGerty {
     @Override
     public void play(Hid hid) {
         // If it is not my turn, there's nothing to do
-        if(hid.getSeat() != mine)
+        if(hid.getSeat() != mine) {
             return;
-        
+        }
         // Othewise respond
         LOG.info("turn hid = "+hid); 
         

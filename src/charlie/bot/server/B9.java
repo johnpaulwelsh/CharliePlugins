@@ -83,7 +83,7 @@ public class B9 implements IBot {
     @Override
     public void sit(Seat seat) {
         this.mine = seat;
-        this.hid = new Hid(seat,Constant.BOT_MIN_BET,0);
+        this.hid = new Hid(seat, Constant.BOT_MIN_BET,0);
         this.myHand = new Hand(this.hid);
     }
 
