@@ -11,7 +11,7 @@ import java.util.Random;
 public class Shoe01 extends Shoe {   
     @Override
     public void init() {
-        super.ran = new Random(42);
+        super.ran = new Random(6);
         super.numDecks = 1;
         super.load();
         super.shuffle();

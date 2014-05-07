@@ -33,7 +33,7 @@ public class Gerty implements IGerty {
     protected boolean myTurn = false;
     protected Card dealerUpCard;
     
-    protected static boolean STAYED = false;
+    protected static boolean STAYED;
     
     protected int shoeSize;
     protected int gamesPlayed;
@@ -57,12 +57,13 @@ public class Gerty implements IGerty {
 
         // invoke upBet on moneyManager ($5 first time guaranteed)
         moneyManager.upBet(currBet, true);
-        //     to reduce bet, clear it first and then upBet some more
+        // to reduce bet, clear it first and then upBet some more
         
         // send bet amount to Courier, which gives back an Hid
         this.mine = Seat.YOU;
         this.hid = courier.bet(currBet, 0);
         this.myHand = new Hand(this.hid);
+        STAYED = false;
     }
 
     @Override
@@ -85,20 +86,20 @@ public class Gerty implements IGerty {
         g.setColor(Color.BLACK);
         int xx = 10;
         
-        g.drawString("Hi-Low", xx, 40);
-        g.drawString("Shoe Size: "+ shoeSize, xx, 60);
-        g.drawString("Running Count: "+ runningCount, xx, 80);
-        g.drawString("True Count: "+ runningCount, xx, 100);
-        g.drawString("Games Played: " + gamesPlayed, xx, 120);
+        g.drawString("Card Counting System: Hi-Low", xx, 40);
+        g.drawString("Shoe Size: "+shoeSize, xx, 60);
+        g.drawString("Running Count: "+runningCount, xx, 80);
+        g.drawString("True Count: "+trueCount, xx, 100);
+        g.drawString("Games Played: "+gamesPlayed, xx, 120);
         g.drawString("Minutes Played: ???", xx, 140);
         g.drawString("Maximum bet amount: " +maxBetAmt, xx, 160);
         g.drawString("Mean bet amount: ???", xx, 180);
         g.drawString("Blackjacks: "+numBjs, xx,200);
-        g.drawString("Charles: "+ numCharlies, xx, 220);
-        g.drawString("Wins: "+ numWins, xx, 240);
-        g.drawString("Breaks: "+ numBreaks, xx, 260);
-        g.drawString("Loses: "+ numLoses, xx, 280);
-        g.drawString("Pushes: "+ numPushes, xx, 300);
+        g.drawString("Charles: "+numCharlies, xx, 220);
+        g.drawString("Wins: "+numWins, xx, 240);
+        g.drawString("Breaks: "+numBreaks, xx, 260);
+        g.drawString("Loses: "+numLoses, xx, 280);
+        g.drawString("Pushes: "+numPushes, xx, 300);
     }
 
     /**
@@ -115,6 +116,7 @@ public class Gerty implements IGerty {
             }
         }
         this.shoeSize = shoeSize;
+        STAYED = false;
     }
 
     /**
@@ -124,7 +126,7 @@ public class Gerty implements IGerty {
     @Override
     public void endGame(int shoeSize) {
         myTurn = false;
-        STAYED = false;
+        STAYED = true;
         LOG.info("received endGame shoeSize = "+shoeSize);
         gamesPlayed++;
     }
@@ -139,7 +141,7 @@ public class Gerty implements IGerty {
     public void deal(Hid hid, Card card, int[] values) {
         LOG.info("got card = "+card+" hid = "+hid);
         
-        if(card == null)
+        if(STAYED || card == null)
             return;
         
         if(hid.getSeat() == Seat.DEALER) {
@@ -164,24 +166,21 @@ public class Gerty implements IGerty {
         // Hit the hand
         hand.hit(card);
         
-        if (STAYED)
-            return;
-        
         // If the card being dealt is mine, and this is during the initial deal,
-        // add the card to my hand
-        if(hid.getSeat() == mine && myHand.size() < 2)
-            myHand.hit(card);
+        // add the card to my hand. Otherwise, it's my turn so move onto the
+        // parts where I can make a play
+        if(hid.getSeat() == mine) {
+            if (myHand.size() < 2)
+                myHand.hit(card);
+            else
+                myTurn = true;
+        }
         
-        // If the card being dealt is mine, and the initial deal is done, then
-        // it's my turn
-        if(hid.getSeat() == mine && myHand.size() >= 2)
-            myTurn = true;
-        
-        if (dealerHand.size() >= 2 && (dealerHand.isBlackjack()
-                || dealerHand.isBroke() || dealerHand.isCharlie()))
+        if (dealerHand != null && dealerHand.size() >= 2 &&
+                (dealerHand.isBlackjack() || dealerHand.isBroke() || dealerHand.isCharlie()))
             myTurn = false;
         
-        if (hand.isBlackjack() || hand.isCharlie() || hand.isBroke())
+        if (myHand.isBlackjack() || myHand.isCharlie())
             myTurn = false;
         
         // It's not my turn if card not mine, my hand broke, or
@@ -219,31 +218,37 @@ public class Gerty implements IGerty {
     @Override
     public void bust(Hid hid) {
         numBreaks++;
+        STAYED = true;
     }
 
     @Override
     public void win(Hid hid) {
         numWins++;
+        STAYED = true;
     }
 
     @Override
     public void blackjack(Hid hid) {
         numBjs++;
+        STAYED = true;
     }
 
     @Override
     public void charlie(Hid hid) {
         numCharlies++;
+        STAYED = true;
     }
 
     @Override
     public void lose(Hid hid) {
         numLoses++;
+        STAYED = true;
     }
 
     @Override
     public void push(Hid hid) {
         numPushes++;
+        STAYED = true;
     }
 
     @Override
