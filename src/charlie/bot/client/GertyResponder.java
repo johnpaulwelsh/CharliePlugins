@@ -4,7 +4,6 @@ import charlie.actor.Courier;
 import charlie.advisor.Advisor;
 import charlie.card.Card;
 import charlie.card.Hand;
-import charlie.plugin.IGerty;
 import charlie.util.Play;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,35 +13,33 @@ import org.slf4j.LoggerFactory;
  * @author Katie Craven and John Paul Welsh
  */
 public class GertyResponder implements Runnable {
-    private final IGerty gerty;
     private final Hand myHand;
     private final Card dealerUpCard;
     private final Courier courier;
     private final Logger LOG = LoggerFactory.getLogger(GertyResponder.class);
     
-    public GertyResponder(IGerty gerty, Hand myHand, Courier courier, Card dealerUpCard) {
-        this.gerty = gerty;
+    public GertyResponder(Hand myHand, Courier courier, Card dealerUpCard) {
         this.myHand = myHand;
         this.courier = courier;
-        LOG.info("DEALER = " + courier);
         this.dealerUpCard = dealerUpCard;
     }
     
     @Override
     public void run() {
-        try {
-            // Delay = a random number between 1000 and 3000
-            int delay = 1500 + (int)(Math.random() * ((3000 - 1000) + 1));
-            Thread.sleep(delay);
-        } catch (InterruptedException ex) {
-          LOG.info("Thread Error: " + ex);
-        }
+//        try {
+//            //Delay = a random number between 1000 and 3000
+//            int delay = 1000 + (int)(Math.random() * ((3000 - 1000) + 1));
+//            Thread.sleep(delay);
+//        } catch (InterruptedException ex) {
+//            LOG.info("Thread Error: " + ex);
+//        }
 
         Advisor adv = new Advisor();
         Play aPlay = adv.advise(myHand, dealerUpCard);
         
         switch(aPlay) {
             case HIT:
+                LOG.info("MY HAND HID = " + myHand.getHid());
                 courier.hit(myHand.getHid());
                 break;
             case DOUBLE_DOWN:
