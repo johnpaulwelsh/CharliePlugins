@@ -15,6 +15,7 @@ import java.awt.Graphics2D;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,6 @@ public class Gerty implements IGerty {
     protected Hid dealerHid;
     protected Hand myHand;
     protected Hand dealerHand;
-//    protected boolean myTurn = false;
     protected Card dealerUpCard;
     protected Advisor adv = new Advisor();
     protected long startTime = System.currentTimeMillis( );
@@ -45,7 +45,6 @@ public class Gerty implements IGerty {
     // Variable to determine if the game is over. This stops us from asking for
     // cards between the end of oen game and beginning of another
     protected static boolean ENDGAME;
-    
     
     protected static final int MIN_BET = 5;
     
@@ -196,6 +195,14 @@ public class Gerty implements IGerty {
                 
         LOG.info("received endGame shoeSize = "+shoeSize);
         gamesPlayed++;
+        
+        if (gamesPlayed == 100) {
+            try {
+                Thread.sleep(7000);
+            } catch (InterruptedException ex) {
+                LOG.info("Thread error: "+ex);
+            }
+        }
     }
 
     /**
