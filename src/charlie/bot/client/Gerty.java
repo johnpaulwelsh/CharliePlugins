@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Date;
 
 /**
  * Implementation of an IGerty automated Blackjack bot.
@@ -32,17 +31,21 @@ public class Gerty implements IGerty {
     protected Seat mine;
     protected HashMap<Hid,Hand> hands = new HashMap<>();
     protected Hid dealerHid;
-    private Hand myHand;
-    private Hand dealerHand;
-    protected boolean myTurn = false;
+    protected Hand myHand;
+    protected Hand dealerHand;
+//    protected boolean myTurn = false;
     protected Card dealerUpCard;
     protected Advisor adv = new Advisor();
     protected long startTime = System.currentTimeMillis( );
     protected int betSums = 0;
 
-    
+    // Variable to determine if we have made a move that stops us from having
+    // another turn for the rest of the hand
     protected static boolean STAYED;
+    // Variable to determine if the game is over. This stops us from asking for
+    // cards between the end of oen game and beginning of another
     protected static boolean ENDGAME;
+    
     
     protected static final int MIN_BET = 5;
     
@@ -66,53 +69,51 @@ public class Gerty implements IGerty {
      */
     @Override
     public void go() {
-        LOG.info("===GO===");
         
-        // Determine
         int currBet;
-        if (gamesPlayed == 0)
+        // If this is our first game, bet the minumum
+        if (gamesPlayed == 0) {
             currBet = MIN_BET;
-        else {
-            //currBet = (Math.max(1, 1 + trueCount) * 5);
-            currBet = MIN_BET;
-            LOG.info("CURRENT BET = "+currBet);
+        // Otherwise, use Kelly's criterion
+        } else {
+            currBet = (Math.max(1, 1 + trueCount) * 5);
         }
         
         betSums = betSums+currBet;
         
-        if(currBet > maxBetAmt){
+        if(currBet > maxBetAmt)
             maxBetAmt = currBet;
-        }
         
+        // Clear the bet
         moneyManager.clearBet();
         
         try {
             Thread.sleep(500);
-
+            
+            // Put chips on the table that add up to our bet amount
             int bet = currBet;
             int tempBet = bet;
-            while(tempBet!= 0){
-                if(tempBet >= 100){
+            while(tempBet!= 0) {
+                if(tempBet >= 100) {
                     moneyManager.upBet(100, true);
                     tempBet = tempBet - 100;
-                } else if(tempBet >= 25){
+                } else if(tempBet >= 25) {
                     moneyManager.upBet(25, true);
                     tempBet = tempBet - 25;
-                }else{
+                } else {
                     moneyManager.upBet(5, true);
                     tempBet = tempBet - 5;
                 }
             }
             
         } catch (InterruptedException ex) {
-            
+            LOG.info("Thread error: "+ex);
         }
         
-        // send bet amount to Courier, which gives back an Hid
+        // Send bet amount to Courier, which gives back an Hid
         this.mine = Seat.YOU;
         this.hid = courier.bet(currBet, 0);
         this.myHand = new Hand(this.hid);
-        LOG.info("===END GO===");
     }
 
     @Override
@@ -136,15 +137,14 @@ public class Gerty implements IGerty {
         g.setColor(Color.BLACK);
         int xx = 10;
         
-        long endTime = System.currentTimeMillis( );
+        long endTime = System.currentTimeMillis();
         long diff = endTime - startTime;
         int minutes = (int) ((diff/1000)/60);
         int seconds = (int) ((diff/1000) - (minutes*60));
         String sec = String.format("%02d", seconds);
         
-        if(gamesPlayed > 0){
+        if(gamesPlayed > 0)
             meanBetAmt = betSums/gamesPlayed;
-        }
         
         g.drawString("System: Hi-Lo", xx, 40);
         g.drawString("Shoe Size: "+df.format(shoeSize), xx, 60);
@@ -175,12 +175,11 @@ public class Gerty implements IGerty {
                 this.dealerHid = hid_;
             }
         }
-        this.shoeSize = (double) (shoeSize / 52.0);
         
+        LOG.info("received startGame shoeSize = "+shoeSize);
+        this.shoeSize = (double) (shoeSize / 52.0);
         STAYED = false;
         ENDGAME = false;
-        
-        LOG.info("----------START GAME");
     }
 
     /**
@@ -189,16 +188,13 @@ public class Gerty implements IGerty {
      */
     @Override
     public void endGame(int shoeSize) {
-        LOG.info("END GAME----------");
-
-        myTurn = false;
         STAYED = true;
         ENDGAME = true;
         dealerHid = null;
 
         trueCount = (int) (runningCount / (shoeSize / 52.0));
                 
-        //LOG.info("received endGame shoeSize = "+shoeSize);
+        LOG.info("received endGame shoeSize = "+shoeSize);
         gamesPlayed++;
     }
 
@@ -211,7 +207,7 @@ public class Gerty implements IGerty {
     @Override
     public void deal(Hid hid, Card card, int[] values) {
         
-        // Block for applying hi-lo strategy to card being dealt
+        // Applying hi-lo strategy to card being dealt
         if (card.value() != null) {
             if (card.isAce())
                 runningCount -= 1;
@@ -228,9 +224,6 @@ public class Gerty implements IGerty {
         
         LOG.info("got card = "+card+" hid = "+hid);
         
-        if(card == null)
-            return;
-        
         Hand h = hands.get(hid);
         
         if(hid.getSeat() == Seat.DEALER) {
@@ -238,17 +231,9 @@ public class Gerty implements IGerty {
             dealerHand = h;
         }
         
-        // If the card being dealt is mine, and this is during the initial deal,
-        // add the card to my hand. Otherwise, it's my turn so move onto the
-        // parts where I can make a play
-        if(hid.getSeat() == Seat.YOU) {
-            //myHand = h;
-            
-            if (myHand.size() < 2)
-                myHand.hit(card);
-            else
-                myTurn = true;
-        }
+        // If the card being dealt is mine, take it
+        if(hid.getSeat() == Seat.YOU)
+            myHand.hit(card);
         
         // If the hand does not exist...this could happen if
         // player splits a hand which we don't yet know about.
@@ -258,23 +243,24 @@ public class Gerty implements IGerty {
             hands.put(hid, h);
         }
 
+        // Stop playing if the dealer's hand has resolved
         if (dealerHand != null &&
                 (dealerHand.isBlackjack() || dealerHand.isBroke() ||
                  dealerHand.isCharlie()   || dealerHand.getValue() == 21)) {
-            myTurn = false;
             STAYED = true;
         }
         
+        // Stop playing if our hand has resolved
         if (myHand != null && 
                 (myHand.isBlackjack() || myHand.isCharlie() ||
                  myHand.isBroke()     || myHand.getValue() == 21)) {
-            myTurn = false;
             STAYED = true;
         }
         
-        if (myTurn && !STAYED) {
+        // If it's our turn, and it's not during the initial deal, and we
+        // are still allowed to make moves, make a move
+        if (hid.getSeat() == Seat.YOU && myHand.size() > 2 && !STAYED)
             play(hid);
-        }
     }
 
     /**
@@ -327,6 +313,10 @@ public class Gerty implements IGerty {
         ENDGAME = true;
     }
 
+    /**
+     * Signals that the deck is shuffling and resets the running count, true
+     * count, and shoe size.
+     */
     @Override
     public void shuffling() {
         LOG.info("shuffling...");
@@ -349,16 +339,15 @@ public class Gerty implements IGerty {
             int delay = 1000 + (int)(Math.random() * ((3000 - 1000) + 1));
             Thread.sleep(delay);
             
+            // Consult the basic strategy and make a move
             respond();
             
             Thread.sleep(500);
-            
-            myTurn = false;
 
         } catch (InterruptedException ex) {
             LOG.info("Thread Error: " + ex);
         } finally {
-            // nothing
+            // nothing, here for safety
         }
     }
     
@@ -369,15 +358,15 @@ public class Gerty implements IGerty {
         if (ENDGAME)
             return;
         
-        // Sometimes this thread gets called when dealerUpCard has not been
+        // Sometimes this method gets called when dealerUpCard has not been
         // instantiated yet (it could also be that dealerUpCard is the Hole
         // Card, which we cannot read anyway). So we check to make sure we
         // only start the thread when the dealerUpCard actually has a value.
+        // We also check for whether myHand is null, since that occasionally
+        // happens too.
         if (myHand == null || dealerUpCard == null)
             return;
-        
-        LOG.info("MY HAND IS "+myHand.toString());
-        
+                
         Play aPlay = adv.advise(myHand, dealerUpCard);
         
         switch(aPlay) {
@@ -389,27 +378,27 @@ public class Gerty implements IGerty {
                 // so if the BS tells us to DD, we will hit instead
                 // since it's essentially the same action.
                 if (myHand.size() > 2) {
-                    courier.hit(hid);
+                    courier.hit(myHand.getHid());
                 } else {
-                    courier.dubble(hid);
-                    Gerty.STAYED = true;
+                    courier.dubble(myHand.getHid());
+                    STAYED = true;
                 }
                 break;
             case STAY:
-                courier.stay(hid);
-                Gerty.STAYED = true;
+                courier.stay(myHand.getHid());
+                STAYED = true;
                 break;
             case SPLIT:
                 if (myHand.getValue() >= 17) {
-                    courier.stay(hid);
-                    Gerty.STAYED = true;
+                    courier.stay(myHand.getHid());
+                    STAYED = true;
                     
                 } else if (myHand.getValue() <= 10) {
-                    courier.hit(hid);
+                    courier.hit(myHand.getHid());
                     
                 } else if (myHand.getValue() == 11) {
-                    courier.dubble(hid);
-                    Gerty.STAYED = true;
+                    courier.dubble(myHand.getHid());
+                    STAYED = true;
                     
                 } else {
                     // instead of approximating with the assumption
@@ -418,14 +407,12 @@ public class Gerty implements IGerty {
                     // a perfect player. So if given SPLIT, it will hit
                     // on any value for its own hand that is between
                     // 12 and 16.
-                    courier.hit(hid);
+                    courier.hit(myHand.getHid());
                 }
                 break;
             default:
                 LOG.info("????");
                 break;
-        }
-        
-        LOG.info("ADVISED PLAY IS "+aPlay.toString());
+        }        
     }
 }
