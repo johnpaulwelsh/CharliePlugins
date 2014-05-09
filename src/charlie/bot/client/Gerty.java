@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Date;
 
 /**
  * Implementation of an IGerty automated Blackjack bot.
@@ -36,6 +37,9 @@ public class Gerty implements IGerty {
     protected boolean myTurn = false;
     protected Card dealerUpCard;
     protected Advisor adv = new Advisor();
+    protected long startTime = System.currentTimeMillis( );
+    protected int betSums = 0;
+
     
     protected static boolean STAYED;
     protected static boolean ENDGAME;
@@ -48,7 +52,7 @@ public class Gerty implements IGerty {
     protected int numBjs, numCharlies, numWins, numBreaks, numLoses, numPushes;
     protected int trueCount = 0, runningCount = 0;
     protected int minsPlayed;
-    protected int maxBetAmt, meanBetAmt;
+    protected int maxBetAmt, meanBetAmt = 0;
 
     /**
      * Contructor.
@@ -74,13 +78,31 @@ public class Gerty implements IGerty {
             LOG.info("CURRENT BET = "+currBet);
         }
         
+        betSums = betSums+currBet;
+        
+        if(currBet > maxBetAmt){
+            maxBetAmt = currBet;
+        }
+        
         moneyManager.clearBet();
         
         try {
             Thread.sleep(500);
 
             int bet = currBet;
-            moneyManager.upBet(bet, true);
+            int tempBet = bet;
+            while(tempBet!= 0){
+                if(tempBet >= 100){
+                    moneyManager.upBet(100, true);
+                    tempBet = tempBet - 100;
+                } else if(tempBet >= 25){
+                    moneyManager.upBet(25, true);
+                    tempBet = tempBet - 25;
+                }else{
+                    moneyManager.upBet(5, true);
+                    tempBet = tempBet - 5;
+                }
+            }
             
         } catch (InterruptedException ex) {
             
@@ -114,14 +136,24 @@ public class Gerty implements IGerty {
         g.setColor(Color.BLACK);
         int xx = 10;
         
+        long endTime = System.currentTimeMillis( );
+        long diff = endTime - startTime;
+        int minutes = (int) ((diff/1000)/60);
+        int seconds = (int) ((diff/1000) - (minutes*60));
+        String sec = String.format("%02d", seconds);
+        
+        if(gamesPlayed > 0){
+            meanBetAmt = betSums/gamesPlayed;
+        }
+        
         g.drawString("System: Hi-Lo", xx, 40);
         g.drawString("Shoe Size: "+df.format(shoeSize), xx, 60);
         g.drawString("Running Count: "+runningCount, xx, 80);
         g.drawString("True Count: "+trueCount, xx, 100);
         g.drawString("Games Played: "+gamesPlayed, xx, 120);
-        g.drawString("Mins Played: ???", xx, 140);
+        g.drawString("Mins Played: "+minutes+":"+sec, xx, 140);
         g.drawString("Max Bet Amt: " +maxBetAmt, xx, 160);
-        g.drawString("Mean Bet Amt: ???", xx, 180);
+        g.drawString("Mean Bet Amt: "+meanBetAmt, xx, 180);
         g.drawString("Blackjacks: "+numBjs, xx,200);
         g.drawString("Charlies: "+numCharlies, xx, 220);
         g.drawString("Wins: "+numWins, xx, 240);
