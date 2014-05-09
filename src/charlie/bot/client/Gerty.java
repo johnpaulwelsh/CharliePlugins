@@ -12,6 +12,7 @@ import charlie.view.AMoneyManager;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import org.slf4j.Logger;
@@ -41,10 +42,11 @@ public class Gerty implements IGerty {
     
     protected static final int MIN_BET = 5;
     
-    protected int shoeSize;
-    protected int gamesPlayed;
+    protected DecimalFormat df = new DecimalFormat("#.##");
+    protected double shoeSize;
+    protected int gamesPlayed = 0;
     protected int numBjs, numCharlies, numWins, numBreaks, numLoses, numPushes;
-    protected int trueCount, runningCount;
+    protected int trueCount = 0, runningCount = 0;
     protected int minsPlayed;
     protected int maxBetAmt, meanBetAmt;
 
@@ -52,7 +54,7 @@ public class Gerty implements IGerty {
      * Contructor.
      */
     public Gerty() {
-        
+
     }
     
     /**
@@ -61,22 +63,32 @@ public class Gerty implements IGerty {
     @Override
     public void go() {
         LOG.info("===GO===");
-        // invoke upBet on moneyManager ($5 first time guaranteed)
+        
+        // Determine
+        int currBet;
+        if (gamesPlayed == 0)
+            currBet = MIN_BET;
+        else {
+            //currBet = (Math.max(1, 1 + trueCount) * 5);
+            currBet = MIN_BET;
+            LOG.info("CURRENT BET = "+currBet);
+        }
+        
         moneyManager.clearBet();
         
         try {
             Thread.sleep(500);
-            moneyManager.upBet(MIN_BET, true);
 
+            int bet = currBet;
+            moneyManager.upBet(bet, true);
+            
         } catch (InterruptedException ex) {
             
         }
         
-        int total = moneyManager.getWager();
-        
         // send bet amount to Courier, which gives back an Hid
         this.mine = Seat.YOU;
-        this.hid = courier.bet(total, 0);
+        this.hid = courier.bet(currBet, 0);
         this.myHand = new Hand(this.hid);
         LOG.info("===END GO===");
     }
@@ -103,7 +115,7 @@ public class Gerty implements IGerty {
         int xx = 10;
         
         g.drawString("System: Hi-Lo", xx, 40);
-        g.drawString("Shoe Size: "+shoeSize, xx, 60);
+        g.drawString("Shoe Size: "+df.format(shoeSize), xx, 60);
         g.drawString("Running Count: "+runningCount, xx, 80);
         g.drawString("True Count: "+trueCount, xx, 100);
         g.drawString("Games Played: "+gamesPlayed, xx, 120);
@@ -131,7 +143,8 @@ public class Gerty implements IGerty {
                 this.dealerHid = hid_;
             }
         }
-        this.shoeSize = shoeSize;
+        this.shoeSize = (double) (shoeSize / 52.0);
+        
         STAYED = false;
         ENDGAME = false;
         
@@ -150,6 +163,8 @@ public class Gerty implements IGerty {
         STAYED = true;
         ENDGAME = true;
         dealerHid = null;
+
+        trueCount = (int) (runningCount / (shoeSize / 52.0));
                 
         //LOG.info("received endGame shoeSize = "+shoeSize);
         gamesPlayed++;
@@ -163,6 +178,19 @@ public class Gerty implements IGerty {
      */
     @Override
     public void deal(Hid hid, Card card, int[] values) {
+        
+        // Block for applying hi-lo strategy to card being dealt
+        if (card.value() != null) {
+            if (card.isAce())
+                runningCount -= 1;
+            else if (card.value() > 9)
+                runningCount -= 1;
+            else if (card.value() < 7)
+                runningCount += 1;
+            else
+                runningCount += 0;
+        }
+        
         if (ENDGAME)
             return;
         
@@ -182,7 +210,7 @@ public class Gerty implements IGerty {
         // add the card to my hand. Otherwise, it's my turn so move onto the
         // parts where I can make a play
         if(hid.getSeat() == Seat.YOU) {
-            myHand = h;
+            //myHand = h;
             
             if (myHand.size() < 2)
                 myHand.hit(card);
@@ -270,6 +298,9 @@ public class Gerty implements IGerty {
     @Override
     public void shuffling() {
         LOG.info("shuffling...");
+        runningCount = 0;
+        trueCount = 0;
+        this.shoeSize = 1;
     }
 
     /**
@@ -319,33 +350,33 @@ public class Gerty implements IGerty {
         
         switch(aPlay) {
             case HIT:
-                courier.hit(myHand.getHid());
+                courier.hit(hid);
                 break;
             case DOUBLE_DOWN:
                 // We cannot double down with more than 2 cards,
                 // so if the BS tells us to DD, we will hit instead
                 // since it's essentially the same action.
                 if (myHand.size() > 2) {
-                    courier.hit(myHand.getHid());
+                    courier.hit(hid);
                 } else {
-                    courier.dubble(myHand.getHid());
+                    courier.dubble(hid);
                     Gerty.STAYED = true;
                 }
                 break;
             case STAY:
-                courier.stay(myHand.getHid());
+                courier.stay(hid);
                 Gerty.STAYED = true;
                 break;
             case SPLIT:
                 if (myHand.getValue() >= 17) {
-                    courier.stay(myHand.getHid());
+                    courier.stay(hid);
                     Gerty.STAYED = true;
                     
                 } else if (myHand.getValue() <= 10) {
-                    courier.hit(myHand.getHid());
+                    courier.hit(hid);
                     
                 } else if (myHand.getValue() == 11) {
-                    courier.dubble(myHand.getHid());
+                    courier.dubble(hid);
                     Gerty.STAYED = true;
                     
                 } else {
@@ -355,7 +386,7 @@ public class Gerty implements IGerty {
                     // a perfect player. So if given SPLIT, it will hit
                     // on any value for its own hand that is between
                     // 12 and 16.
-                    courier.hit(myHand.getHid());
+                    courier.hit(hid);
                 }
                 break;
             default:
